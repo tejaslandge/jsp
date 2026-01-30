@@ -2,161 +2,349 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>JSP with Maven & Tomcat</title>
+    <title>JSP with Maven & Tomcat - Complete Guide</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      pre,
+      code {
+        font-family: 'Fira Code', monospace;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+          0 8px 10px -6px rgb(0 0 0 / 0.1);
+      }
+      .code-block {
+        position: relative;
+      }
+      .copy-btn {
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .code-block:hover .copy-btn {
+        opacity: 1;
+      }
+      .step-number {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    </style>
+
     <!-- Copy Button Script -->
     <script>
       function copyCode(button) {
-        const pre = button.nextElementSibling;
+        const pre = button.parentElement.nextElementSibling;
         const text = pre.innerText;
 
         navigator.clipboard.writeText(text).then(() => {
-          const original = button.innerText;
-          button.innerText = "Copied!";
-          button.classList.add("bg-green-600");
+          const icon = button.querySelector('i');
+          const originalIcon = icon.className;
+          icon.className = 'fas fa-check';
+          button.classList.add('bg-green-600', 'hover:bg-green-700');
+          button.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
 
           setTimeout(() => {
-            button.innerText = original;
-            button.classList.remove("bg-green-600");
-          }, 1500);
+            icon.className = originalIcon;
+            button.classList.remove('bg-green-600', 'hover:bg-green-700');
+            button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+          }, 2000);
         });
       }
     </script>
   </head>
 
-  <body class="bg-slate-100 text-slate-800">
-    <header class="bg-slate-900 text-white py-8 shadow">
-      <div class="max-w-5xl mx-auto px-4 text-center">
-        <h1 class="text-3xl font-bold mb-2">
-          JSP with Maven & Embedded Tomcat
+  <body class="bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-12 shadow-2xl">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <div class="flex justify-center mb-4">
+          <i class="fas fa-coffee text-6xl opacity-90"></i>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-3">
+          JSP with Maven & Tomcat
         </h1>
+        <p class="text-xl text-indigo-100 max-w-2xl mx-auto">
+          Complete guide to building web applications with JavaServer Pages
+        </p>
       </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
-      <!-- 1 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">1. Prerequisites</h2>
-        <ul class="list-disc list-inside space-y-1">
-          <li>Java JDK 8 or above</li>
-          <li>Apache Maven</li>
-          <li>VS Code / Antigravity</li>
-          <li>
-            VS Code Extensions:
-            <ul class="list-disc list-inside ml-6">
-              <li>Extension Pack for Java</li>
-              <li>Maven for Java</li>
+    <!-- Quick Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50 border-b-2 border-indigo-500">
+      <div class="max-w-6xl mx-auto px-4 py-4">
+        <div class="flex flex-wrap gap-3 justify-center text-sm">
+          <a href="#setup" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition">
+            <i class="fas fa-cog mr-1"></i> Setup
+          </a>
+          <a href="#basics" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition">
+            <i class="fas fa-book mr-1"></i> Basics
+          </a>
+          <a href="#crud" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition">
+            <i class="fas fa-database mr-1"></i> CRUD
+          </a>
+          <a href="#advanced" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition">
+            <i class="fas fa-code mr-1"></i> Advanced
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-12 space-y-8">
+      <!-- Prerequisites Section -->
+      <section id="setup" class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+            <i class="fas fa-list-check text-indigo-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-indigo-600 font-semibold text-sm">STEP 1</span>
+            <h2 class="text-2xl font-bold">Prerequisites</h2>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-4 flex items-center">
+              <i class="fas fa-download text-blue-600 mr-2"></i>
+              Required Software
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
+                <span><strong>Java JDK</strong> - Version 8 or above</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
+                <span><strong>Apache Maven</strong> - Build tool</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
+                <span><strong>VS Code</strong> - Code editor</span>
+              </li>
             </ul>
-          </li>
-        </ul>
+          </div>
 
-        <div class="relative mt-4">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-java -version
-mvn -version
-        </pre
-          >
+          <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-4 flex items-center">
+              <i class="fas fa-puzzle-piece text-purple-600 mr-2"></i>
+              VS Code Extensions
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-plug text-purple-600 mr-2 mt-1"></i>
+                <span>Extension Pack for Java</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-plug text-purple-600 mr-2 mt-1"></i>
+                <span>Maven for Java</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-6 code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-terminal mr-1"></i> Verify Installation
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">java -version
+mvn -version</pre>
         </div>
       </section>
 
-      <!-- 2 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">
-          2. Create Maven Web Project (JSP)
-        </h2>
+      <!-- Create Project Section -->
+      <section id="basics" class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+            <i class="fas fa-folder-plus text-green-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-green-600 font-semibold text-sm">STEP 2</span>
+            <h2 class="text-2xl font-bold">Create Maven Web Project</h2>
+          </div>
+        </div>
 
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-mvn archetype:generate -DgroupId=com.cia -DartifactId=jsp-demo -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
-        </pre
-          >
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-green-600 mr-3 mt-1"></i>
+            <span>
+              This command creates a new Maven project with the web application archetype.
+              It sets up the basic structure needed for JSP development.
+            </span>
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-terminal mr-1"></i> Maven Command
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">mvn archetype:generate \
+  -DgroupId=com.cia \
+  -DartifactId=jsp-demo \
+  -DarchetypeArtifactId=maven-archetype-webapp \
+  -DinteractiveMode=false</pre>
         </div>
       </section>
 
-      <!-- 3 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">3. Project Structure</h2>
-
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-jsp-demo/
- ├── pom.xml
- └── src/
-     └── main/
-         └── webapp/
-             └── index.jsp
-        </pre
-          >
+      <!-- Project Structure -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+            <i class="fas fa-sitemap text-yellow-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-yellow-600 font-semibold text-sm">STEP 3</span>
+            <h2 class="text-2xl font-bold">Project Structure</h2>
+          </div>
         </div>
 
-        <ul class="mt-4 list-disc list-inside">
-          <li><strong>index.jsp</strong> – Entry point</li>
-          <li><strong>pom.xml</strong> – Maven configuration</li>
-        </ul>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-folder-tree mr-1"></i> Directory Layout
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">jsp-demo/
+ ├── 📄 pom.xml
+ └── 📁 src/
+     └── 📁 main/
+         └── 📁 webapp/
+             └── 📄 index.jsp</pre>
+          </div>
+
+          <div class="bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-4 flex items-center">
+              <i class="fas fa-file-code text-yellow-600 mr-2"></i>
+              Key Files
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-file text-blue-600 mr-2 mt-1"></i>
+                <div>
+                  <strong>index.jsp</strong>
+                  <p class="text-sm text-slate-600">Entry point of your application</p>
+                </div>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-file-code text-orange-600 mr-2 mt-1"></i>
+                <div>
+                  <strong>pom.xml</strong>
+                  <p class="text-sm text-slate-600">Maven configuration & dependencies</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <!-- 4 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">4. pom.xml Configuration</h2>
+      <!-- POM Configuration -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+            <i class="fas fa-cog text-orange-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-orange-600 font-semibold text-sm">STEP 4</span>
+            <h2 class="text-2xl font-bold">pom.xml Configuration</h2>
+          </div>
+        </div>
 
-        <ul class="list-disc list-inside mb-4">
-          <li>Packaging type: <strong>WAR</strong></li>
-          <li>Embedded Tomcat</li>
-          <li>Port changed to <strong>8081</strong></li>
-        </ul>
+        <div class="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-orange-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-lightbulb text-orange-600 mr-2"></i>
+            Key Features
+          </h3>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-orange-600 mr-2 mt-1"></i>
+              <span>Packaging type: <strong>WAR</strong> (Web Application Archive)</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-orange-600 mr-2 mt-1"></i>
+              <span>Embedded Tomcat 7 for easy deployment</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-orange-600 mr-2 mt-1"></i>
+              <span>Port configured to <strong>8081</strong> (avoids conflicts)</span>
+            </li>
+          </ul>
+        </div>
 
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-<pre>
-&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-file-code mr-1"></i> pom.xml
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
 
     &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
 
-    &lt;groupId&gt;<span style="color: red;">com.example</span>&lt;/groupId&gt;
-    &lt;artifactId&gt;<span style="color: red;">demo</span>&lt;/artifactId&gt;
+    &lt;groupId&gt;com.example&lt;/groupId&gt;
+    &lt;artifactId&gt;demo&lt;/artifactId&gt;
     &lt;version&gt;1.0.0&lt;/version&gt;
     &lt;packaging&gt;war&lt;/packaging&gt;
-    &lt;name&gt;<span style="color: red;">demo</span> Maven Webapp&lt;/name&gt;
-    &lt;url&gt;http://maven.apache.org&lt;/url&gt;
+    &lt;name&gt;demo Maven Webapp&lt;/name&gt;
 
     &lt;dependencies&gt;
         &lt;dependency&gt;
@@ -167,10 +355,9 @@ jsp-demo/
     &lt;/dependencies&gt;
 
     &lt;build&gt;
-        &lt;finalName&gt;<span style="color: red;">demo</span>&lt;/finalName&gt;
+        &lt;finalName&gt;demo&lt;/finalName&gt;
 
         &lt;plugins&gt;
-
             &lt;plugin&gt;
                 &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
                 &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
@@ -182,412 +369,372 @@ jsp-demo/
                 &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
                 &lt;version&gt;2.2&lt;/version&gt;
                 &lt;configuration&gt;
-                    &lt;path&gt;/<span style="color: red;">demo</span>&lt;/path&gt;
+                    &lt;path&gt;/demo&lt;/path&gt;
                     &lt;port&gt;8081&lt;/port&gt;
                 &lt;/configuration&gt;
             &lt;/plugin&gt;
-
         &lt;/plugins&gt;
     &lt;/build&gt;
-
-&lt;/project&gt;
-</pre>
-
-        </pre>
+&lt;/project&gt;</pre>
         </div>
       </section>
 
-      <!-- 5 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">5. Sample JSP Programs</h2>
+      <!-- Sample JSP Programs -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+            <i class="fas fa-code text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-blue-600 font-semibold text-sm">STEP 5</span>
+            <h2 class="text-2xl font-bold">Sample JSP Programs</h2>
+          </div>
+        </div>
 
-        <h3 class="font-semibold mb-2">Sample 1: Query Parameter</h3>
-        <div class="relative mb-6">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;%
+        <!-- Query Parameter Example -->
+        <div class="mb-8">
+          <div class="flex items-center mb-4">
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+              Example 1
+            </span>
+            <h3 class="ml-3 font-semibold text-lg">Query Parameter Handling</h3>
+          </div>
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Reading URL Parameters
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%
 String num = request.getParameter("number");
 if (num != null) {
     int x = Integer.parseInt(num);
 %&gt;
-Square: &lt;%= x * x %&gt;
-&lt;% } %&gt;
-        </pre
-          >
+    Square: &lt;%= x * x %&gt;
+&lt;% } %&gt;</pre>
+          </div>
         </div>
 
-        <h3 class="font-semibold mb-2">Sample 2: POST Form</h3>
-        <div class="relative mb-6">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;form method="post"&gt;
-    &lt;input type="text" name="number"&gt;
-    &lt;input type="submit"&gt;
-&lt;/form&gt;
-        </pre
-          >
+        <!-- POST Form Example -->
+        <div class="mb-8">
+          <div class="flex items-center mb-4">
+            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+              Example 2
+            </span>
+            <h3 class="ml-3 font-semibold text-lg">POST Form Handling</h3>
+          </div>
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> HTML Form
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;form method="post"&gt;
+    &lt;input type="text" name="number" placeholder="Enter a number"&gt;
+    &lt;input type="submit" value="Calculate"&gt;
+&lt;/form&gt;</pre>
+          </div>
         </div>
 
-        <h3 class="font-semibold mb-2">Sample 3: Database Connection</h3>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-Class.forName("com.mysql.cj.jdbc.Driver");
-Connection con = DriverManager.getConnection(url, user, password);
-        </pre
-          >
+        <!-- Database Connection Example -->
+        <div>
+          <div class="flex items-center mb-4">
+            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">
+              Example 3
+            </span>
+            <h3 class="ml-3 font-semibold text-lg">Database Connection</h3>
+          </div>
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-database mr-1"></i> MySQL JDBC Connection
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">Class.forName("com.mysql.cj.jdbc.Driver");
+Connection con = DriverManager.getConnection(url, user, password);</pre>
+          </div>
         </div>
       </section>
 
-      <!-- 6 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">6. Maven Build Commands</h2>
+      <!-- Maven Commands -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+            <i class="fas fa-terminal text-red-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-red-600 font-semibold text-sm">STEP 6</span>
+            <h2 class="text-2xl font-bold">Maven Build Commands</h2>
+          </div>
+        </div>
 
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-mvn clean
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-gradient-to-br from-red-50 to-orange-50 p-6 rounded-xl text-center">
+            <i class="fas fa-broom text-3xl text-red-600 mb-3"></i>
+            <h3 class="font-semibold mb-2">Clean</h3>
+            <p class="text-sm text-slate-600">Remove build artifacts</p>
+          </div>
+          <div class="bg-gradient-to-br from-orange-50 to-yellow-50 p-6 rounded-xl text-center">
+            <i class="fas fa-box text-3xl text-orange-600 mb-3"></i>
+            <h3 class="font-semibold mb-2">Package</h3>
+            <p class="text-sm text-slate-600">Create WAR file</p>
+          </div>
+          <div class="bg-gradient-to-br from-yellow-50 to-green-50 p-6 rounded-xl text-center">
+            <i class="fas fa-download text-3xl text-yellow-600 mb-3"></i>
+            <h3 class="font-semibold mb-2">Install</h3>
+            <p class="text-sm text-slate-600">Install to local repo</p>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-terminal mr-1"></i> Common Commands
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">mvn clean
 mvn package
-mvn install
-        </pre
-          >
+mvn install</pre>
         </div>
       </section>
 
-      <!-- 7 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">7. Run JSP Application</h2>
-
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm">
-mvn tomcat7:run
-        </pre
-          >
+      <!-- Run Application -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mr-4">
+            <i class="fas fa-play text-emerald-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-emerald-600 font-semibold text-sm">STEP 7</span>
+            <h2 class="text-2xl font-bold">Run JSP Application</h2>
+          </div>
         </div>
 
-        <p class="mt-2">Tomcat runs on port <strong>8081</strong></p>
-      </section>
+        <div class="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-rocket text-emerald-600 mr-3 mt-1 text-xl"></i>
+            <span>
+              This command starts the embedded Tomcat server on port <strong>8081</strong>.
+              Your application will be accessible through your web browser.
+            </span>
+          </p>
+        </div>
 
-      <!-- 8 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">8. Access in Browser</h2>
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-terminal mr-1"></i> Start Tomcat Server
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">mvn tomcat7:run</pre>
+        </div>
 
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm">
-http://localhost:8081/jsp-demo/index.jsp?number=5
-        </pre
-          >
+        <div class="mt-6 bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-3 flex items-center text-blue-900">
+            <i class="fas fa-globe text-blue-600 mr-2"></i>
+            Access in Browser
+          </h3>
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-link mr-1"></i> Application URL
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">http://localhost:8081/jsp-demo/index.jsp?number=5</pre>
+          </div>
         </div>
       </section>
 
-      <!-- 9 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">9. Important Notes</h2>
-        <ul class="list-disc list-inside space-y-1">
-          <li>JSP cannot run directly in browser</li>
-          <li>JSP needs Tomcat</li>
-          <li>WAR files are deployed, not executed</li>
-          <li>Embedded Tomcat is ideal for learning</li>
-        </ul>
+      <!-- Important Notes -->
+      <section class="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-2xl shadow-lg border-2 border-yellow-200">
+        <div class="flex items-center mb-6">
+          <i class="fas fa-exclamation-triangle text-3xl text-yellow-600 mr-4"></i>
+          <h2 class="text-2xl font-bold">Important Notes</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white p-5 rounded-xl shadow-sm">
+            <h3 class="font-semibold mb-3 flex items-center text-red-700">
+              <i class="fas fa-times-circle mr-2"></i>
+              What NOT to Do
+            </h3>
+            <ul class="space-y-2">
+              <li class="flex items-start text-sm">
+                <i class="fas fa-ban text-red-500 mr-2 mt-1"></i>
+                <span>Don't use Live Server (JSP not supported)</span>
+              </li>
+              <li class="flex items-start text-sm">
+                <i class="fas fa-ban text-red-500 mr-2 mt-1"></i>
+                <span>Don't run WAR files directly</span>
+              </li>
+              <li class="flex items-start text-sm">
+                <i class="fas fa-ban text-red-500 mr-2 mt-1"></i>
+                <span>Avoid port 8080 (common conflicts)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl shadow-sm">
+            <h3 class="font-semibold mb-3 flex items-center text-green-700">
+              <i class="fas fa-check-circle mr-2"></i>
+              Key Points
+            </h3>
+            <ul class="space-y-2">
+              <li class="flex items-start text-sm">
+                <i class="fas fa-lightbulb text-green-500 mr-2 mt-1"></i>
+                <span>JSP cannot run directly in browser</span>
+              </li>
+              <li class="flex items-start text-sm">
+                <i class="fas fa-lightbulb text-green-500 mr-2 mt-1"></i>
+                <span>JSP needs Tomcat server to execute</span>
+              </li>
+              <li class="flex items-start text-sm">
+                <i class="fas fa-lightbulb text-green-500 mr-2 mt-1"></i>
+                <span>WAR files are deployed, not executed</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <!-- 10 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">10. Common Mistakes</h2>
-        <ul class="list-disc list-inside space-y-1">
-          <li>Using Live Server (JSP not supported)</li>
-          <li>Running WAR directly</li>
-          <li>Port 8080 conflict</li>
-        </ul>
+      <!-- CRUD Section -->
+      <section id="crud" class="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-2xl shadow-2xl text-white">
+        <div class="text-center mb-8">
+          <i class="fas fa-database text-6xl mb-4 opacity-90"></i>
+          <h2 class="text-3xl font-bold mb-2">CRUD Operations in JSP</h2>
+          <p class="text-indigo-200 text-lg">
+            Learning Priority: Read → Add → Delete → Update
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-4">
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl text-center border-2 border-yellow-400">
+            <div class="bg-yellow-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">P0 - PRIORITY</div>
+            <i class="fas fa-eye text-4xl mb-3"></i>
+            <h3 class="font-semibold text-lg">READ</h3>
+            <p class="text-sm text-indigo-200">Fetch records first</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl text-center border-2 border-green-400">
+            <div class="bg-green-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">P1</div>
+            <i class="fas fa-plus-circle text-4xl mb-3"></i>
+            <h3 class="font-semibold text-lg">ADD</h3>
+            <p class="text-sm text-indigo-200">Insert records</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl text-center border-2 border-orange-400">
+            <div class="bg-orange-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">P2</div>
+            <i class="fas fa-trash text-4xl mb-3"></i>
+            <h3 class="font-semibold text-lg">DELETE</h3>
+            <p class="text-sm text-indigo-200">Remove records</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl text-center border-2 border-blue-400">
+            <div class="bg-blue-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">P3</div>
+            <i class="fas fa-edit text-4xl mb-3"></i>
+            <h3 class="font-semibold text-lg">UPDATE</h3>
+            <p class="text-sm text-indigo-200">Modify records</p>
+          </div>
+        </div>
       </section>
 
-      <!-- 11 -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">11. Summary</h2>
-        <ul class="list-disc list-inside space-y-1">
-          <li>Maven manages dependencies</li>
-          <li>Tomcat executes JSP</li>
-          <li>VS Code + Maven is industry-relevant</li>
-        </ul>
-      </section>
+      <!-- Database Table -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+            <i class="fas fa-table text-purple-600 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">Database Setup</h2>
+          </div>
+        </div>
 
-      <!-- CRUD -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">
-          12. CRUD Operations in JSP (Complete Guide)
-        </h2>
-
-        <p class="mb-4">
-          CRUD stands for <strong>Create, Read, Update, Delete</strong>. In JSP,
-          CRUD is usually implemented using:
-        </p>
-
-        <ul class="list-disc list-inside mb-4 space-y-1">
-          <li>JSP for UI</li>
-          <li>JDBC for database connectivity</li>
-          <li>MySQL as backend database</li>
-          <li>Embedded Tomcat to run application</li>
-        </ul>
-
-        <!-- DB TABLE -->
-        <h3 class="font-semibold mt-6 mb-2">Step 1: Database Table</h3>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-CREATE TABLE users (
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-database mr-1"></i> Create Users Table
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100),
     email VARCHAR(100)
-);
-        </pre
-          >
+);</pre>
         </div>
-
-        <!-- DB CONNECTION -->
-        <h3 class="font-semibold mt-6 mb-2">
-          Step 2: Database Connection (JSP)
-        </h3>
-        <p class="mb-2">This code connects JSP with MySQL using JDBC.</p>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;%@ page import="java.sql.*" %&gt;
-&lt;%
-String url = "jdbc:mysql://localhost:3306/your_db?useSSL=false";
-String user = "root";
-String pass = "password";
-
-Class.forName("com.mysql.cj.jdbc.Driver");
-Connection con = DriverManager.getConnection(url, user, pass);
-%&gt;
-        </pre
-          >
-        </div>
-
-        <!-- CREATE -->
-        <h3 class="font-semibold mt-6 mb-2">CREATE – Insert Record</h3>
-        <p class="mb-2">Insert data into database using JSP.</p>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;%
-String name = request.getParameter("name");
-String email = request.getParameter("email");
-
-PreparedStatement ps =
-    con.prepareStatement("INSERT INTO users(name,email) VALUES(?,?)");
-ps.setString(1, name);
-ps.setString(2, email);
-ps.executeUpdate();
-%&gt;
-        </pre
-          >
-        </div>
-
-        <!-- READ -->
-        <h3 class="font-semibold mt-6 mb-2">READ – Fetch Records</h3>
-        <p class="mb-2">Display records from database.</p>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;%
-Statement st = con.createStatement();
-ResultSet rs = st.executeQuery("SELECT * FROM users");
-
-while(rs.next()) {
-%&gt;
-&lt;p&gt;
-ID: &lt;%= rs.getInt("id") %&gt; |
-Name: &lt;%= rs.getString("name") %&gt; |
-Email: &lt;%= rs.getString("email") %&gt;
-&lt;/p&gt;
-&lt;% } %&gt;
-        </pre
-          >
-        </div>
-
-        <!-- UPDATE -->
-        <h3 class="font-semibold mt-6 mb-2">UPDATE – Modify Record</h3>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;%
-PreparedStatement ps =
-    con.prepareStatement("UPDATE users SET name=? WHERE id=?");
-ps.setString(1, "New Name");
-ps.setInt(2, 1);
-ps.executeUpdate();
-%&gt;
-        </pre
-          >
-        </div>
-
-        <!-- DELETE -->
-        <h3 class="font-semibold mt-6 mb-2">DELETE – Remove Record</h3>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;%
-PreparedStatement ps =
-    con.prepareStatement("DELETE FROM users WHERE id=?");
-ps.setInt(1, 1);
-ps.executeUpdate();
-%&gt;
-        </pre
-          >
-        </div>
-
-        <!-- NOTES -->
-        <h3 class="font-semibold mt-6 mb-2">
-          Important Notes (Exam + Practical)
-        </h3>
-        <ul class="list-disc list-inside space-y-1">
-          <li>
-            Always use <strong>PreparedStatement</strong> (prevents SQL
-            Injection)
-          </li>
-          <li>Close Connection after use</li>
-          <li>
-            JSP should not contain heavy business logic (but OK for learning)
-          </li>
-          <li>In real projects, Servlets + DAO are used</li>
-        </ul>
       </section>
-      <!-- CRUD NOTES -->
-      <section class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">
-          13. Notes: CRUD in JSP (File-wise Complete Guide)
-        </h2>
 
-        <p class="mb-4">
-          This section explains how CRUD (Create, Read, Update, Delete)
-          operations are implemented in JSP using multiple JSP files. This
-          approach is commonly used in labs and exams.
-        </p>
-
-        <!-- STRUCTURE -->
-        <h3 class="font-semibold mt-6 mb-2">Project File Structure</h3>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-src/main/webapp/
- ├── db.jsp
- ├── addUser.jsp
- ├── insertUser.jsp
- ├── listUsers.jsp
- ├── editUser.jsp
- ├── updateUser.jsp
- └── deleteUser.jsp
-        </pre
-          >
+      <!-- Database Connection -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+            <i class="fas fa-plug text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">Database Connection (db.jsp)</h2>
+          </div>
         </div>
 
-        <!-- DB JSP -->
-        <h3 class="font-semibold mt-6 mb-2">db.jsp – Database Connection</h3>
-        <p class="mb-2">
-          <strong>Purpose:</strong> Centralized database connection file. This
-          file is included in other JSP pages.
-        </p>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;%@ page import="java.sql.*" %&gt;
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-blue-600 mr-3 mt-1"></i>
+            <span>
+              This file establishes a connection to MySQL database. Include it in all JSP pages that need database access.
+            </span>
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-file-code mr-1"></i> db.jsp
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
 &lt;%
 String url = "jdbc:mysql://localhost:3306/your_db?useSSL=false&serverTimezone=UTC";
 String user = "root";
@@ -595,38 +742,129 @@ String password = "password";
 
 Class.forName("com.mysql.cj.jdbc.Driver");
 Connection con = DriverManager.getConnection(url, user, password);
-%&gt;
-        </pre
-          >
+%&gt;</pre>
+        </div>
+      </section>
+
+      <!-- READ Operation - P0 PRIORITY -->
+      <section id="advanced" class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-yellow-400">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+            <i class="fas fa-eye text-yellow-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <span class="bg-yellow-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P0 - START HERE</span>
+              <h2 class="text-2xl font-bold">READ - Fetch Records</h2>
+            </div>
+            <p class="text-sm text-slate-600 mt-1">Learn to display data from database first</p>
+          </div>
         </div>
 
-        <!-- ADD USER FORM -->
-        <h3 class="font-semibold mt-6 mb-2">
-          addUser.jsp – Create (HTML Form)
-        </h3>
+        <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-lightbulb text-yellow-600 mr-3 mt-1 text-xl"></i>
+            <span>
+              <strong>Why start with READ?</strong> Understanding how to fetch and display data is fundamental. 
+              Once you can see data, you'll better understand how to add, delete, and update it.
+            </span>
+          </p>
+        </div>
 
-        <p class="mb-2">
-          <strong>Purpose:</strong> Collect user input and send it to
-          <code>insertUser.jsp</code>.<br />
-          <strong>Validation:</strong> Client-side validation using JavaScript.
-        </p>
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-file-code mr-1"></i> listUsers.jsp - Display All Records
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
 
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
+&lt;h2&gt;User List&lt;/h2&gt;
 
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;!DOCTYPE html&gt;
+&lt;table border="1"&gt;
+&lt;tr&gt;
+    &lt;th&gt;ID&lt;/th&gt;
+    &lt;th&gt;Name&lt;/th&gt;
+    &lt;th&gt;Email&lt;/th&gt;
+    &lt;th&gt;Actions&lt;/th&gt;
+&lt;/tr&gt;
+
+&lt;%
+Statement st = con.createStatement();
+ResultSet rs = st.executeQuery("SELECT * FROM users");
+
+while(rs.next()) {
+    int id = rs.getInt("id");
+%&gt;
+&lt;tr&gt;
+    &lt;td&gt;&lt;%= id %&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;%= rs.getString("name") %&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;%= rs.getString("email") %&gt;&lt;/td&gt;
+    &lt;td&gt;
+        &lt;a href="editUser.jsp?id=&lt;%= id %&gt;"&gt;Edit&lt;/a&gt; |
+        &lt;a href="deleteUser.jsp?id=&lt;%= id %&gt;"&gt;Delete&lt;/a&gt;
+    &lt;/td&gt;
+&lt;/tr&gt;
+&lt;% } 
+
+rs.close();
+st.close();
+con.close();
+%&gt;
+
+&lt;/table&gt;
+&lt;br&gt;
+&lt;a href="addUser.jsp"&gt;Add New User&lt;/a&gt;</pre>
+        </div>
+      </section>
+
+      <!-- CREATE/ADD Operation - P1 -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-green-400">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+            <i class="fas fa-plus-circle text-green-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <span class="bg-green-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P1 - SECOND</span>
+              <h2 class="text-2xl font-bold">ADD - Insert Record</h2>
+            </div>
+            <p class="text-sm text-slate-600 mt-1">Now learn to add new data to the database</p>
+          </div>
+        </div>
+
+        <!-- Add User Form -->
+        <div class="mb-8">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full mr-3">
+              addUser.jsp
+            </span>
+            HTML Form with Validation
+          </h3>
+
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Form with Client-side Validation
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
     &lt;title&gt;Add User&lt;/title&gt;
-
     &lt;script&gt;
         function validateForm() {
             let name = document.forms["userForm"]["name"].value;
@@ -640,189 +878,113 @@ Connection con = DriverManager.getConnection(url, user, password);
         }
     &lt;/script&gt;
 &lt;/head&gt;
-
 &lt;body&gt;
-
-&lt;h2&gt;Add User&lt;/h2&gt;
-
-&lt;form name="userForm"
-      action="insertUser.jsp"
-      method="post"
-      onsubmit="return validateForm()"&gt;
-
-    Name:&lt;br&gt;
-    &lt;input type="text" name="name"&gt;&lt;br&gt;&lt;br&gt;
-
-    Email:&lt;br&gt;
-    &lt;input type="email" name="email"&gt;&lt;br&gt;&lt;br&gt;
-
-    &lt;input type="submit" value="Save"&gt;
-&lt;/form&gt;
-
-&lt;br&gt;
-&lt;a href="listUsers.jsp"&gt;View Users&lt;/a&gt;
-
+    &lt;h2&gt;Add User&lt;/h2&gt;
+    &lt;form name="userForm" action="insertUser.jsp" method="post" 
+          onsubmit="return validateForm()"&gt;
+        Name: &lt;input type="text" name="name"&gt;&lt;br&gt;
+        Email: &lt;input type="email" name="email"&gt;&lt;br&gt;
+        &lt;input type="submit" value="Save"&gt;
+    &lt;/form&gt;
+    &lt;a href="listUsers.jsp"&gt;View Users&lt;/a&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-  </pre
-          >
+&lt;/html&gt;</pre>
+          </div>
         </div>
 
-        <!-- INSERT -->
-        <h3 class="font-semibold mt-6 mb-2">
-          insertUser.jsp – Create (Server Handling)
-        </h3>
+        <!-- Insert User -->
+        <div>
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mr-3">
+              insertUser.jsp
+            </span>
+            Server-side Processing
+          </h3>
 
-        <p class="mb-2">
-          <strong>Purpose:</strong> Inserts user record into database.<br />
-          <strong>Validation:</strong> Server-side validation is mandatory.
-        </p>
-
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-&lt;%@ page import="java.sql.*" %&gt;
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Insert Data with Validation
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
 &lt;%@ include file="db.jsp" %&gt;
 
 &lt;%
 String name = request.getParameter("name");
 String email = request.getParameter("email");
 
-/* Server-side validation */
-if (name == null || email == null ||
+// Server-side validation
+if (name == null || email == null || 
     name.trim().equals("") || email.trim().equals("")) {
-
     out.println("Invalid Input");
     return;
 }
 
-PreparedStatement ps =
-    con.prepareStatement(
-        "INSERT INTO users(name, email) VALUES (?, ?)"
-    );
-
+PreparedStatement ps = con.prepareStatement(
+    "INSERT INTO users(name, email) VALUES (?, ?)"
+);
 ps.setString(1, name);
 ps.setString(2, email);
 
 int rows = ps.executeUpdate();
-
-/* Close resources */
 ps.close();
 con.close();
 
-/* Redirect after successful insert */
-if (rows > 0) {
+if (rows &gt; 0) {
     response.sendRedirect("listUsers.jsp");
 } else {
     out.println("Insert failed");
 }
-%&gt;
-  </pre
-          >
+%&gt;</pre>
+          </div>
         </div>
+      </section>
 
-        <!-- READ -->
-        <h3 class="font-semibold mt-6 mb-2">listUsers.jsp – Read</h3>
-        <p class="mb-2">
-          <strong>Purpose:</strong> Displays all records with Edit/Delete links.
-        </p>
-        <div class="relative">
-          <h3 class="font-semibold mt-6 mb-2">listUsers.jsp – READ Records</h3>
-          <p class="mb-2">
-            <strong>Purpose:</strong> Fetch and display all user records from
-            database.
-          </p>
-
-          <div class="relative">
-            <button
-              onclick="copyCode(this)"
-              class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-            >
-              Copy
-            </button>
-
-            <pre
-              class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-            >
-&lt;%@ page import="java.sql.*" %&gt;
-&lt;%@ include file="db.jsp" %&gt;
-
-&lt;h2&gt;User List&lt;/h2&gt;
-
-&lt;table border="1"&gt;
-&lt;tr&gt;
-  &lt;th&gt;ID&lt;/th&gt;
-  &lt;th&gt;Name&lt;/th&gt;
-  &lt;th&gt;Email&lt;/th&gt;
-&lt;/tr&gt;
-
-&lt;%
-Statement st = con.createStatement();
-ResultSet rs = st.executeQuery("SELECT * FROM users");
-
-while(rs.next()){
-%&gt;
-&lt;tr&gt;
-  &lt;td&gt;&lt;%= rs.getInt("id") %&gt;&lt;/td&gt;
-  &lt;td&gt;&lt;%= rs.getString("name") %&gt;&lt;/td&gt;
-  &lt;td&gt;&lt;%= rs.getString("email") %&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;%
-}
-
-rs.close();
-st.close();
-con.close();
-%&gt;
-
-&lt;/table&gt;
-  </pre
-            >
+      <!-- DELETE Operation - P2 -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-orange-400">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+            <i class="fas fa-trash text-orange-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <span class="bg-orange-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P2 - THIRD</span>
+              <h2 class="text-2xl font-bold">DELETE - Remove Record</h2>
+            </div>
+            <p class="text-sm text-slate-600 mt-1">Learn to remove data - simpler than updating</p>
           </div>
         </div>
 
-        <!-- UPDATE & DELETE NOTES -->
-        <section class="bg-white p-6 rounded-xl shadow">
-          <h2 class="text-xl font-semibold mb-4">
-            14. Notes: UPDATE & DELETE in JSP (Full File Code)
-          </h2>
-
-          <p class="mb-4">
-            This section explains how <strong>Update</strong> and
-            <strong>Delete</strong>
-            operations are implemented in JSP using separate files. This is the
-            most common structure used in labs and exams.
+        <div class="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-orange-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-orange-600 mr-3 mt-1"></i>
+            <span>
+              <strong>Why before UPDATE?</strong> Delete is simpler as it only needs the ID. 
+              Once you understand delete, update will be easier to grasp.
+            </span>
           </p>
+        </div>
 
-          <!-- EDIT USER -->
-          <h3 class="font-semibold mt-6 mb-2">
-            editUser.jsp – Load Data for Update
-          </h3>
-          <p class="mb-2">
-            <strong>Purpose:</strong>
-            Fetch user record using ID and display it in an editable form.
-          </p>
-
-          <div class="relative">
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-file-code mr-1"></i> deleteUser.jsp - Delete Record
+            </span>
             <button
               onclick="copyCode(this)"
-              class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
             >
-              Copy
+              <i class="fas fa-copy"></i> Copy
             </button>
-
-            <pre
-              class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-            >
-&lt;%@ page import="java.sql.*" %&gt;
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
 &lt;%@ include file="db.jsp" %&gt;
 
 &lt;%
@@ -835,10 +997,77 @@ if (idParam == null) {
 
 int id = Integer.parseInt(idParam);
 
-PreparedStatement ps =
-    con.prepareStatement("SELECT * FROM users WHERE id=?");
+PreparedStatement ps = con.prepareStatement("DELETE FROM users WHERE id=?");
 ps.setInt(1, id);
+ps.executeUpdate();
 
+ps.close();
+con.close();
+
+response.sendRedirect("listUsers.jsp");
+%&gt;</pre>
+        </div>
+      </section>
+
+      <!-- UPDATE Operation - P3 -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-blue-400">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+            <i class="fas fa-edit text-blue-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <span class="bg-blue-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P3 - ADVANCED</span>
+              <h2 class="text-2xl font-bold">UPDATE - Modify Record</h2>
+            </div>
+            <p class="text-sm text-slate-600 mt-1">Most complex operation - combines READ and INSERT concepts</p>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-blue-600 mr-3 mt-1"></i>
+            <span>
+              <strong>Why last?</strong> Update requires fetching data (READ), displaying it in a form (like ADD), 
+              and then modifying it. Master the other operations first!
+            </span>
+          </p>
+        </div>
+
+        <!-- Edit User Form -->
+        <div class="mb-8">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full mr-3">
+              editUser.jsp
+            </span>
+            Load Data for Editing
+          </h3>
+
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Fetch and Display User Data
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String idParam = request.getParameter("id");
+if (idParam == null) {
+    out.println("Invalid User ID");
+    return;
+}
+
+int id = Integer.parseInt(idParam);
+PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE id=?");
+ps.setInt(1, id);
 ResultSet rs = ps.executeQuery();
 
 if (!rs.next()) {
@@ -849,61 +1078,47 @@ if (!rs.next()) {
 
 &lt;html&gt;
 &lt;body&gt;
-
-&lt;h2&gt;Edit User&lt;/h2&gt;
-
-&lt;form action="updateUser.jsp" method="post"&gt;
-
-    &lt;!-- Hidden ID field is mandatory --&gt;
-    &lt;input type="hidden" name="id"
-           value="&lt;%= rs.getInt("id") %&gt;"&gt;
-
-    Name:&lt;br&gt;
-    &lt;input type="text" name="name"
-           value="&lt;%= rs.getString("name") %&gt;" required&gt;&lt;br&gt;&lt;br&gt;
-
-    Email:&lt;br&gt;
-    &lt;input type="email" name="email"
-           value="&lt;%= rs.getString("email") %&gt;" required&gt;&lt;br&gt;&lt;br&gt;
-
-    &lt;input type="submit" value="Update"&gt;
-&lt;/form&gt;
-
-&lt;a href="listUsers.jsp"&gt;Back to List&lt;/a&gt;
+    &lt;h2&gt;Edit User&lt;/h2&gt;
+    &lt;form action="updateUser.jsp" method="post"&gt;
+        &lt;input type="hidden" name="id" value="&lt;%= rs.getInt("id") %&gt;"&gt;
+        Name: &lt;input type="text" name="name" value="&lt;%= rs.getString("name") %&gt;" required&gt;&lt;br&gt;
+        Email: &lt;input type="email" name="email" value="&lt;%= rs.getString("email") %&gt;" required&gt;&lt;br&gt;
+        &lt;input type="submit" value="Update"&gt;
+    &lt;/form&gt;
+    &lt;a href="listUsers.jsp"&gt;Back to List&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 
 &lt;%
 rs.close();
 ps.close();
 con.close();
-%&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-        </pre
-            >
+%&gt;</pre>
           </div>
+        </div>
 
-          <!-- UPDATE USER -->
-          <h3 class="font-semibold mt-6 mb-2">
-            updateUser.jsp – Update Record
+        <!-- Update User -->
+        <div>
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mr-3">
+              updateUser.jsp
+            </span>
+            Process Update
           </h3>
-          <p class="mb-2">
-            <strong>Purpose:</strong>
-            Receives updated data, validates it, and updates the database.
-          </p>
 
-          <div class="relative">
-            <button
-              onclick="copyCode(this)"
-              class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-            >
-              Copy
-            </button>
-
-            <pre
-              class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-            >
-&lt;%@ page import="java.sql.*" %&gt;
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Update Database Record
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
 &lt;%@ include file="db.jsp" %&gt;
 
 &lt;%
@@ -911,137 +1126,227 @@ String idParam = request.getParameter("id");
 String name = request.getParameter("name");
 String email = request.getParameter("email");
 
-/* Server-side validation */
+// Server-side validation
 if (idParam == null || name == null || email == null ||
     name.trim().equals("") || email.trim().equals("")) {
-
     out.println("Invalid input data");
     return;
 }
 
 int id = Integer.parseInt(idParam);
 
-PreparedStatement ps =
-    con.prepareStatement(
-        "UPDATE users SET name=?, email=? WHERE id=?"
-    );
-
+PreparedStatement ps = con.prepareStatement(
+    "UPDATE users SET name=?, email=? WHERE id=?"
+);
 ps.setString(1, name);
 ps.setString(2, email);
 ps.setInt(3, id);
 
 int rows = ps.executeUpdate();
-
 ps.close();
 con.close();
 
-if (rows > 0) {
+if (rows &gt; 0) {
     response.sendRedirect("listUsers.jsp");
 } else {
     out.println("Update failed");
 }
-%&gt;
-        </pre
-            >
+%&gt;</pre>
           </div>
+        </div>
+      </section>
 
-          <!-- DELETE USER -->
-          <h3 class="font-semibold mt-6 mb-2">
-            deleteUser.jsp – Delete Record
-          </h3>
-          <p class="mb-2">
-            <strong>Purpose:</strong>
-            Deletes a record using ID and redirects to list page.
-          </p>
-
-          <div class="relative">
-            <button
-              onclick="copyCode(this)"
-              class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-            >
-              Copy
-            </button>
-
-            <pre
-              class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-            >
-&lt;%@ page import="java.sql.*" %&gt;
-&lt;%@ include file="db.jsp" %&gt;
-
-&lt;%
-String idParam = request.getParameter("id");
-
-if (idParam == null) {
-    out.println("Invalid User ID");
-    return;
-}
-
-int id = Integer.parseInt(idParam);
-
-PreparedStatement ps =
-    con.prepareStatement("DELETE FROM users WHERE id=?");
-
-ps.setInt(1, id);
-ps.executeUpdate();
-
-ps.close();
-con.close();
-
-response.sendRedirect("listUsers.jsp");
-%&gt;
-        </pre
-            >
+      <!-- CRUD Flow Diagram -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+            <i class="fas fa-diagram-project text-indigo-600 text-xl"></i>
           </div>
-
-          <!-- IMPORTANT NOTES -->
-          <h3 class="font-semibold mt-6 mb-2">Important Notes (Exam & Viva)</h3>
-          <ul class="list-disc list-inside space-y-1">
-            <li>Hidden ID field is mandatory for update</li>
-            <li>Always validate input on server-side</li>
-            <li>Use PreparedStatement to prevent SQL Injection</li>
-            <li>Redirect after update/delete to avoid duplicate actions</li>
-          </ul>
-
-          
-        </section>
-
-        <!-- VALIDATION -->
-        <h3 class="font-semibold mt-6 mb-2">
-          Form Validation & Error Handling
-        </h3>
-        <ul class="list-disc list-inside space-y-1">
-          <li>Client-side validation improves user experience</li>
-          <li>Server-side validation is mandatory for security</li>
-          <li>PreparedStatement prevents SQL Injection</li>
-          <li>Always check for null or empty inputs</li>
-        </ul>
-
-        <!-- FLOW -->
-        <h3 class="font-semibold mt-6 mb-2">CRUD Flow (Very Important)</h3>
-        <div class="relative">
-          <button
-            onclick="copyCode(this)"
-            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
-          >
-            Copy
-          </button>
-          <pre
-            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
-          >
-addUser.jsp → insertUser.jsp → listUsers.jsp
-listUsers.jsp → editUser.jsp → updateUser.jsp → listUsers.jsp
-listUsers.jsp → deleteUser.jsp → listUsers.jsp
-        </pre
-          >
+          <div>
+            <h2 class="text-2xl font-bold">CRUD Workflow (Learning Priority)</h2>
+          </div>
         </div>
 
-        <p class="mt-4 text-sm text-slate-600">
-          Note: This JSP-only approach is for learning purposes. Real-world
-          applications use Servlets and MVC architecture.
-        </p>
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-xl">
+          <div class="space-y-4">
+            <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-400">
+              <div class="bg-yellow-400 text-slate-900 font-bold px-4 py-2 rounded-lg mr-4">P0 - READ</div>
+              <div class="flex-1 font-mono text-sm">
+                listUsers.jsp (displays all records) ← <strong>Start Here!</strong>
+              </div>
+            </div>
+
+            <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-400">
+              <div class="bg-green-400 text-slate-900 font-bold px-4 py-2 rounded-lg mr-4">P1 - ADD</div>
+              <div class="flex-1 font-mono text-sm">
+                addUser.jsp → insertUser.jsp → listUsers.jsp
+              </div>
+            </div>
+
+            <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-orange-400">
+              <div class="bg-orange-400 text-slate-900 font-bold px-4 py-2 rounded-lg mr-4">P2 - DELETE</div>
+              <div class="flex-1 font-mono text-sm">
+                listUsers.jsp → deleteUser.jsp → listUsers.jsp
+              </div>
+            </div>
+
+            <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-400">
+              <div class="bg-blue-400 text-slate-900 font-bold px-4 py-2 rounded-lg mr-4">P3 - UPDATE</div>
+              <div class="flex-1 font-mono text-sm">
+                listUsers.jsp → editUser.jsp → updateUser.jsp → listUsers.jsp
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-gradient-to-r from-yellow-50 to-green-50 border-l-4 border-yellow-500 p-6 rounded-lg">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-graduation-cap text-yellow-600 mr-2"></i>
+            Learning Path Explanation
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-yellow-600 mr-2 mt-1"></i>
+              <span><strong>P0 (READ):</strong> Learn to see data first - it's fundamental to understanding databases</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-green-600 mr-2 mt-1"></i>
+              <span><strong>P1 (ADD):</strong> Once you can view data, learn to insert new records</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-orange-600 mr-2 mt-1"></i>
+              <span><strong>P2 (DELETE):</strong> Simpler than update - just needs an ID to remove a record</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-blue-600 mr-2 mt-1"></i>
+              <span><strong>P3 (UPDATE):</strong> Most complex - combines READ (fetch data) + ADD (modify data)</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Best Practices -->
+      <section class="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl shadow-lg border-2 border-green-200">
+        <div class="flex items-center mb-6">
+          <i class="fas fa-shield-alt text-3xl text-green-600 mr-4"></i>
+          <h2 class="text-2xl font-bold">Best Practices & Security</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h3 class="font-semibold mb-4 flex items-center text-green-700">
+              <i class="fas fa-check-double mr-2"></i>
+              Always Follow
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-shield text-green-600 mr-2 mt-1"></i>
+                <span><strong>Use PreparedStatement</strong> - Prevents SQL Injection</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-shield text-green-600 mr-2 mt-1"></i>
+                <span><strong>Server-side Validation</strong> - Never trust client input</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-shield text-green-600 mr-2 mt-1"></i>
+                <span><strong>Close Resources</strong> - Prevent memory leaks</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-shield text-green-600 mr-2 mt-1"></i>
+                <span><strong>Use Hidden Fields</strong> - For IDs in update forms</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h3 class="font-semibold mb-4 flex items-center text-blue-700">
+              <i class="fas fa-graduation-cap mr-2"></i>
+              Important for Exams
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                <span>Know the complete file structure</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                <span>Understand the workflow between files</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                <span>Remember to include db.jsp</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                <span>Always redirect after update/delete</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded-lg">
+          <p class="flex items-start">
+            <i class="fas fa-exclamation-triangle text-yellow-600 mr-3 mt-1 text-xl"></i>
+            <span class="text-slate-700">
+              <strong>Note:</strong> This JSP-only approach is for learning purposes. 
+              Real-world applications use Servlets, DAO pattern, and MVC architecture for better code organization.
+            </span>
+          </p>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section class="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-2xl shadow-2xl text-white">
+        <div class="text-center mb-8">
+          <i class="fas fa-trophy text-6xl mb-4 opacity-90"></i>
+          <h2 class="text-3xl font-bold mb-2">Quick Summary</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-3 flex items-center">
+              <i class="fas fa-cube mr-2"></i>
+              Maven
+            </h3>
+            <p class="text-indigo-100 text-sm">
+              Manages dependencies and builds your project efficiently
+            </p>
+          </div>
+
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-3 flex items-center">
+              <i class="fas fa-server mr-2"></i>
+              Tomcat
+            </h3>
+            <p class="text-indigo-100 text-sm">
+              Executes JSP pages and serves your web application
+            </p>
+          </div>
+
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-3 flex items-center">
+              <i class="fas fa-code mr-2"></i>
+              VS Code
+            </h3>
+            <p class="text-indigo-100 text-sm">
+              Industry-standard editor with Java and Maven support
+            </p>
+          </div>
+        </div>
       </section>
     </main>
 
-   
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 py-8 mt-12">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <p class="mb-2">
+          <i class="fas fa-book-open mr-2"></i>
+          JSP with Maven & Tomcat - Complete Tutorial
+        </p>
+        <p class="text-sm text-slate-400">
+          Learn. Build. Deploy.
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
