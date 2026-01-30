@@ -59,6 +59,20 @@
       }
     </style>
 
+    <!-- Mermaid for Flowcharts -->
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'default',
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true,
+          curve: 'basis'
+        }
+      });
+    </script>
+
     <!-- Copy Button Script -->
     <script>
       function copyCode(button) {
@@ -281,6 +295,62 @@ mvn -version</pre>
               </li>
             </ul>
           </div>
+        </div>
+      </section>
+
+      <!-- JSP Application Flow -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+            <i class="fas fa-project-diagram text-purple-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-purple-600 font-semibold text-sm">VISUAL GUIDE</span>
+            <h2 class="text-2xl font-bold">JSP Application Flow</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-purple-600 mr-3 mt-1"></i>
+            <span>
+              This flowchart shows how a JSP application works from user request to response. 
+              Understanding this flow is crucial for debugging and development.
+            </span>
+          </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+flowchart TD
+    Start([User Opens Browser]) --> Request[User Types URL<br/>localhost:8081/demo/index.jsp]
+    Request --> Maven{Maven Build<br/>Successful?}
+    Maven -->|No| Error1[Build Error<br/>Check pom.xml]
+    Maven -->|Yes| Tomcat[Tomcat Server<br/>Starts on Port 8081]
+    Tomcat --> JSP[JSP File Loaded<br/>index.jsp]
+    JSP --> Compile{JSP Compiles<br/>to Servlet?}
+    Compile -->|No| Error2[Compilation Error<br/>Check JSP syntax]
+    Compile -->|Yes| Execute[Execute JSP Code]
+    Execute --> DB{Need Database?}
+    DB -->|Yes| DBConnect[Connect via db.jsp<br/>MySQL JDBC]
+    DBConnect --> Query[Execute SQL Query]
+    Query --> Result[Process Results]
+    Result --> HTML
+    DB -->|No| HTML[Generate HTML]
+    HTML --> Browser[Send to Browser]
+    Browser --> Display[Display Web Page]
+    Display --> End([User Sees Page])
+    
+    style Start fill:#e0f2fe
+    style End fill:#dcfce7
+    style Maven fill:#fef3c7
+    style Error1 fill:#fee2e2
+    style Error2 fill:#fee2e2
+    style Tomcat fill:#ddd6fe
+    style JSP fill:#fce7f3
+    style DB fill:#fef3c7
+    style Browser fill:#dbeafe
+          </pre>
         </div>
       </section>
 
@@ -819,6 +889,38 @@ con.close();
 &lt;br&gt;
 &lt;a href="addUser.jsp"&gt;Add New User&lt;/a&gt;</pre>
         </div>
+
+        <!-- READ Operation Flowchart -->
+        <div class="mt-8 bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-xl">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-diagram-project text-yellow-600 mr-2"></i>
+            READ Operation Flow
+          </h3>
+          <div class="bg-white p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart LR
+    A([User Clicks<br/>View Users]) --> B[Load listUsers.jsp]
+    B --> C[Include db.jsp]
+    C --> D[Connect to MySQL]
+    D --> E[CREATE Statement]
+    E --> F[Execute SELECT Query]
+    F --> G[Get ResultSet]
+    G --> H{More Rows?}
+    H -->|Yes| I[Read Row Data]
+    I --> J[Display in Table]
+    J --> H
+    H -->|No| K[Close Resources]
+    K --> L[Show Edit/Delete Links]
+    L --> M([User Sees List])
+    
+    style A fill:#fef3c7
+    style M fill:#dcfce7
+    style D fill:#dbeafe
+    style F fill:#e0e7ff
+    style J fill:#fce7f3
+            </pre>
+          </div>
+        </div>
       </section>
 
       <!-- CREATE/ADD Operation - P1 -->
@@ -941,6 +1043,47 @@ if (rows &gt; 0) {
 %&gt;</pre>
           </div>
         </div>
+
+        <!-- ADD Operation Flowchart -->
+        <div class="mt-8 bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-diagram-project text-green-600 mr-2"></i>
+            ADD Operation Flow
+          </h3>
+          <div class="bg-white p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart TD
+    A([User Clicks<br/>Add User]) --> B[Load addUser.jsp]
+    B --> C[Display Form<br/>Name & Email]
+    C --> D[User Fills Form]
+    D --> E[Click Submit]
+    E --> F{Client-side<br/>Validation}
+    F -->|Fail| G[Show Alert<br/>Fill All Fields]
+    G --> D
+    F -->|Pass| H[POST to insertUser.jsp]
+    H --> I[Include db.jsp]
+    I --> J[Get Form Parameters]
+    J --> K{Server-side<br/>Validation}
+    K -->|Fail| L[Show Error<br/>Invalid Input]
+    K -->|Pass| M[Create PreparedStatement]
+    M --> N[Set Parameters<br/>name, email]
+    N --> O[Execute INSERT]
+    O --> P{Success?}
+    P -->|Yes| Q[Redirect to<br/>listUsers.jsp]
+    P -->|No| R[Show Error]
+    Q --> S([User Sees<br/>Updated List])
+    
+    style A fill:#dcfce7
+    style S fill:#dcfce7
+    style F fill:#fef3c7
+    style K fill:#fef3c7
+    style O fill:#e0e7ff
+    style G fill:#fee2e2
+    style L fill:#fee2e2
+    style R fill:#fee2e2
+            </pre>
+          </div>
+        </div>
       </section>
 
       <!-- DELETE Operation - P2 -->
@@ -1002,6 +1145,45 @@ con.close();
 
 response.sendRedirect("listUsers.jsp");
 %&gt;</pre>
+        </div>
+
+        <!-- DELETE Operation Flowchart -->
+        <div class="mt-8 bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-xl">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-diagram-project text-orange-600 mr-2"></i>
+            DELETE Operation Flow
+          </h3>
+          <div class="bg-white p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart TD
+    A([User Clicks<br/>Delete Link]) --> B[Pass ID Parameter<br/>deleteUser.jsp?id=X]
+    B --> C[Load deleteUser.jsp]
+    C --> D[Include db.jsp]
+    D --> E[Get ID Parameter]
+    E --> F{ID Valid?}
+    F -->|No| G[Show Error<br/>Invalid User ID]
+    F -->|Yes| H[Parse ID to Integer]
+    H --> I[Create PreparedStatement<br/>DELETE WHERE id=?]
+    I --> J[Set ID Parameter]
+    J --> K[Execute DELETE]
+    K --> L[Close Resources]
+    L --> M[Redirect to<br/>listUsers.jsp]
+    M --> N([User Sees<br/>Updated List])
+    
+    style A fill:#fed7aa
+    style N fill:#dcfce7
+    style F fill:#fef3c7
+    style K fill:#fca5a5
+    style G fill:#fee2e2
+    style M fill:#dbeafe
+            </pre>
+          </div>
+          <div class="mt-4 bg-orange-100 border-l-4 border-orange-500 p-4 rounded">
+            <p class="text-sm flex items-start">
+              <i class="fas fa-lightbulb text-orange-600 mr-2 mt-1"></i>
+              <span><strong>Note:</strong> DELETE is simpler than UPDATE because it only needs the ID - no form data to validate!</span>
+            </p>
+          </div>
         </div>
       </section>
 
@@ -1150,6 +1332,59 @@ if (rows &gt; 0) {
 %&gt;</pre>
           </div>
         </div>
+
+        <!-- UPDATE Operation Flowchart -->
+        <div class="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-diagram-project text-blue-600 mr-2"></i>
+            UPDATE Operation Flow (2 Steps)
+          </h3>
+          <div class="bg-white p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart TD
+    A([User Clicks<br/>Edit Link]) --> B[Pass ID to<br/>editUser.jsp?id=X]
+    B --> C[Include db.jsp]
+    C --> D[Get ID Parameter]
+    D --> E{ID Valid?}
+    E -->|No| F[Show Error<br/>Invalid User ID]
+    E -->|Yes| G[Create PreparedStatement<br/>SELECT WHERE id=?]
+    G --> H[Execute Query]
+    H --> I{User Found?}
+    I -->|No| J[Show Error<br/>User Not Found]
+    I -->|Yes| K[Load Data into Form]
+    K --> L[Show Pre-filled Form<br/>+ Hidden ID Field]
+    L --> M[User Edits Data]
+    M --> N[Click Update Button]
+    N --> O[POST to updateUser.jsp]
+    O --> P[Get All Parameters<br/>id, name, email]
+    P --> Q{Server-side<br/>Validation}
+    Q -->|Fail| R[Show Error<br/>Invalid Input]
+    Q -->|Pass| S[Create PreparedStatement<br/>UPDATE SET name=?, email=?<br/>WHERE id=?]
+    S --> T[Set All Parameters]
+    T --> U[Execute UPDATE]
+    U --> V{Success?}
+    V -->|Yes| W[Redirect to<br/>listUsers.jsp]
+    V -->|No| X[Show Error]
+    W --> Y([User Sees<br/>Updated List])
+    
+    style A fill:#dbeafe
+    style Y fill:#dcfce7
+    style K fill:#fce7f3
+    style L fill:#fef3c7
+    style U fill:#e0e7ff
+    style F fill:#fee2e2
+    style J fill:#fee2e2
+    style R fill:#fee2e2
+    style X fill:#fee2e2
+            </pre>
+          </div>
+          <div class="mt-4 bg-blue-100 border-l-4 border-blue-500 p-4 rounded">
+            <p class="text-sm flex items-start">
+              <i class="fas fa-info-circle text-blue-600 mr-2 mt-1"></i>
+              <span><strong>Why UPDATE is Complex:</strong> It requires two steps - first READ the data (editUser.jsp), then MODIFY it (updateUser.jsp). This is why we learn it last!</span>
+            </p>
+          </div>
+        </div>
       </section>
 
       <!-- CRUD Flow Diagram -->
@@ -1218,6 +1453,716 @@ if (rows &gt; 0) {
               <span><strong>P3 (UPDATE):</strong> Most complex - combines READ (fetch data) + ADD (modify data)</span>
             </li>
           </ul>
+        </div>
+
+        <!-- Complete CRUD Comparison Flowchart -->
+        <div class="mt-8 bg-white p-6 rounded-xl shadow-lg">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-layer-group text-indigo-600 mr-2"></i>
+            Complete CRUD Cycle - All Operations Together
+          </h3>
+          <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart TD
+    Start([Application Start]) --> List[listUsers.jsp<br/>P0 - READ]
+    
+    List --> Action{User Action?}
+    
+    Action -->|Add New| Add1[addUser.jsp<br/>Form]
+    Add1 --> Add2[insertUser.jsp<br/>INSERT Query]
+    Add2 --> List
+    
+    Action -->|Delete| Del1[deleteUser.jsp<br/>Get ID]
+    Del1 --> Del2[DELETE Query<br/>by ID]
+    Del2 --> List
+    
+    Action -->|Edit| Edit1[editUser.jsp<br/>Load Data]
+    Edit1 --> Edit2[Show Form<br/>with Data]
+    Edit2 --> Edit3[updateUser.jsp<br/>UPDATE Query]
+    Edit3 --> List
+    
+    Action -->|View Only| View[Continue<br/>Browsing]
+    View --> List
+    
+    style Start fill:#e0f2fe
+    style List fill:#fef3c7
+    style Add1 fill:#dcfce7
+    style Add2 fill:#dcfce7
+    style Del1 fill:#fed7aa
+    style Del2 fill:#fed7aa
+    style Edit1 fill:#dbeafe
+    style Edit2 fill:#dbeafe
+    style Edit3 fill:#dbeafe
+    style Action fill:#fce7f3
+            </pre>
+          </div>
+          <div class="mt-4 grid md:grid-cols-2 gap-4">
+            <div class="bg-yellow-50 p-4 rounded-lg border-2 border-yellow-200">
+              <h4 class="font-semibold mb-2 text-sm flex items-center">
+                <i class="fas fa-star text-yellow-600 mr-2"></i>
+                Complexity Ranking
+              </h4>
+              <ol class="text-sm space-y-1 ml-4">
+                <li><strong>P0 READ:</strong> Easiest - Just fetch & display</li>
+                <li><strong>P1 ADD:</strong> Simple - Insert new data</li>
+                <li><strong>P2 DELETE:</strong> Simple - Just need ID</li>
+                <li><strong>P3 UPDATE:</strong> Complex - 2 steps required</li>
+              </ol>
+            </div>
+            <div class="bg-indigo-50 p-4 rounded-lg border-2 border-indigo-200">
+              <h4 class="font-semibold mb-2 text-sm flex items-center">
+                <i class="fas fa-lightbulb text-indigo-600 mr-2"></i>
+                Key Insight
+              </h4>
+              <p class="text-sm">
+                All operations center around <strong>listUsers.jsp</strong> (READ). 
+                After any ADD, DELETE, or UPDATE, the app always redirects back to the list 
+                to show the updated data. This is the hub of your application!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Flow Diagrams Section -->
+      <section class="bg-gradient-to-br from-cyan-600 to-blue-700 p-8 rounded-2xl shadow-2xl text-white">
+        <div class="text-center mb-8">
+          <i class="fas fa-project-diagram text-6xl mb-4 opacity-90"></i>
+          <h2 class="text-3xl font-bold mb-2">Data Flow Diagrams (DFD)</h2>
+          <p class="text-cyan-100 text-lg">
+            Step-by-step visualization of data movement in CRUD operations
+          </p>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+          <p class="text-sm text-cyan-100">
+            <i class="fas fa-info-circle mr-2"></i>
+            <strong>What is a DFD?</strong> A Data Flow Diagram shows how data moves between different components 
+            (User, Browser, JSP Pages, Database). Each diagram below breaks down the complete data journey for each operation.
+          </p>
+        </div>
+      </section>
+
+      <!-- DFD 0: Context Level - Overall System -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center mr-4">
+            <i class="fas fa-globe text-cyan-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-cyan-100 text-cyan-800 text-xs font-bold px-3 py-1 rounded-full">LEVEL 0</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Context Diagram - Complete System</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-cyan-50 to-blue-50 border-l-4 border-cyan-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-cyan-600 mr-3 mt-1"></i>
+            <span>
+              This shows the highest level view of the JSP CRUD application and how users interact with it.
+            </span>
+          </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+graph LR
+    User([👤 User]) -->|"1. HTTP Requests<br/>(View/Add/Edit/Delete)"| System[JSP CRUD<br/>Application<br/>System]
+    System -->|"2. HTML Response<br/>(Web Pages)"| User
+    System <-->|"3. SQL Queries<br/>4. Query Results"| DB[(MySQL<br/>Database)]
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style System fill:#dbeafe,stroke:#3b82f6,stroke-width:3px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-3 gap-4">
+          <div class="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg">
+            <h4 class="font-semibold mb-2 text-sm">👤 User (External Entity)</h4>
+            <p class="text-xs">Sends requests, receives web pages</p>
+          </div>
+          <div class="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
+            <h4 class="font-semibold mb-2 text-sm">📦 System (Process)</h4>
+            <p class="text-xs">Processes all CRUD operations</p>
+          </div>
+          <div class="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
+            <h4 class="font-semibold mb-2 text-sm">💾 Database (Data Store)</h4>
+            <p class="text-xs">Stores user records permanently</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DFD 1: READ Operation -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-yellow-300">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+            <i class="fas fa-eye text-yellow-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-yellow-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P0 - READ DFD</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Data Flow: Fetch & Display Records</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-list-ol text-yellow-600 mr-2"></i>
+            Step-by-Step Data Flow
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-semibold mb-2">📥 Input Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• HTTP Request (GET)</li>
+                <li>• URL: /listUsers.jsp</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-sm font-semibold mb-2">📤 Output Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• HTML Table with user records</li>
+                <li>• ID, Name, Email, Action Links</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 1: GET Request<br/>listUsers.jsp"| P1[Process 1.0<br/>📄 listUsers.jsp<br/>Receive Request]
+    
+    P1 -->|"Step 2: Include<br/>Connection File"| P2[Process 1.1<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P2 -->|"Step 3: SQL Query<br/>SELECT * FROM users"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 4: Result Set<br/>{id, name, email}"| P3[Process 1.2<br/>⚙️ Process Data<br/>Loop through rows]
+    
+    P3 -->|"Step 5: HTML Generation<br/>Build table rows"| P4[Process 1.3<br/>🎨 Format Output<br/>Create HTML]
+    
+    P4 -->|"Step 6: HTTP Response<br/>Complete HTML Page"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P1 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P2 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P3 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P4 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 text-sm">📊 Data Transformation at Each Step:</h4>
+          <div class="space-y-2 text-sm">
+            <p><strong>Step 1→2:</strong> HTTP Request → Database Connection String</p>
+            <p><strong>Step 2→3:</strong> Connection → SQL SELECT Query</p>
+            <p><strong>Step 3→4:</strong> Query → ResultSet (Multiple rows of data)</p>
+            <p><strong>Step 4→5:</strong> ResultSet → HTML Table Rows (String)</p>
+            <p><strong>Step 5→6:</strong> HTML String → HTTP Response (Rendered Page)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DFD 2: CREATE/ADD Operation -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-green-300">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+            <i class="fas fa-plus-circle text-green-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-green-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P1 - ADD DFD</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Data Flow: Insert New Record</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-list-ol text-green-600 mr-2"></i>
+            Step-by-Step Data Flow
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-semibold mb-2">📥 Input Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• User clicks "Add User"</li>
+                <li>• Form data: name, email</li>
+                <li>• Method: POST</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-sm font-semibold mb-2">📤 Output Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• New record in database</li>
+                <li>• Success message</li>
+                <li>• Redirect to list page</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 1: GET Request<br/>addUser.jsp"| P1[Process 2.0<br/>📝 addUser.jsp<br/>Display Form]
+    
+    P1 -->|"Step 2: HTML Form<br/>(name, email fields)"| User
+    
+    User -->|"Step 3: POST Data<br/>{name: 'John', email: 'john@example.com'}"| P2[Process 2.1<br/>📄 insertUser.jsp<br/>Receive Form Data]
+    
+    P2 -->|"Step 4: Validate Data<br/>Check null/empty"| P3{Process 2.2<br/>✅ Validation<br/>Valid?}
+    
+    P3 -->|"Invalid"| P4[Process 2.3<br/>❌ Error Handler<br/>Show Error]
+    P4 -->|"Error Message"| User
+    
+    P3 -->|"Valid"| P5[Process 2.4<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P5 -->|"Step 5: SQL Query<br/>INSERT INTO users<br/>(name, email)<br/>VALUES (?, ?)"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 6: Insert Result<br/>(rows affected)"| P6[Process 2.5<br/>✔️ Success Handler<br/>Process Response]
+    
+    P6 -->|"Step 7: Redirect<br/>Location: listUsers.jsp"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P1 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style P2 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style P3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style P4 fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+    style P5 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style P6 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 bg-green-100 border-l-4 border-green-500 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 text-sm">📊 Data Transformation at Each Step:</h4>
+          <div class="space-y-2 text-sm">
+            <p><strong>Step 1→2:</strong> Request → HTML Form (Empty fields)</p>
+            <p><strong>Step 3:</strong> User Input → POST Data {name: "John", email: "john@mail.com"}</p>
+            <p><strong>Step 4:</strong> POST Data → Validated Data (true/false)</p>
+            <p><strong>Step 5:</strong> Validated Data → SQL INSERT Statement with parameters</p>
+            <p><strong>Step 6:</strong> SQL Execution → Result (1 row affected)</p>
+            <p><strong>Step 7:</strong> Success Result → HTTP Redirect (Location header)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DFD 3: DELETE Operation -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-orange-300">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+            <i class="fas fa-trash text-orange-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-orange-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P2 - DELETE DFD</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Data Flow: Remove Record</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-orange-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-list-ol text-orange-600 mr-2"></i>
+            Step-by-Step Data Flow
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-semibold mb-2">📥 Input Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• User clicks "Delete" link</li>
+                <li>• Query Parameter: id=5</li>
+                <li>• Method: GET</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-sm font-semibold mb-2">📤 Output Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• Record removed from database</li>
+                <li>• Automatic redirect</li>
+                <li>• Updated list displayed</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 1: GET Request<br/>deleteUser.jsp?id=5"| P1[Process 3.0<br/>📄 deleteUser.jsp<br/>Receive Request]
+    
+    P1 -->|"Step 2: Extract Parameter<br/>id = 5"| P2[Process 3.1<br/>🔍 Parameter Parser<br/>Get ID]
+    
+    P2 -->|"Step 3: Validate ID<br/>Check if null/valid"| P3{Process 3.2<br/>✅ Validation<br/>Valid?}
+    
+    P3 -->|"Invalid"| P4[Process 3.3<br/>❌ Error Handler<br/>Show Error]
+    P4 -->|"Error Message"| User
+    
+    P3 -->|"Valid: id=5"| P5[Process 3.4<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P5 -->|"Step 4: SQL Query<br/>DELETE FROM users<br/>WHERE id = 5"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 5: Delete Result<br/>(1 row deleted)"| P6[Process 3.5<br/>✔️ Success Handler<br/>Close Resources]
+    
+    P6 -->|"Step 6: Redirect<br/>Location: listUsers.jsp"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P1 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style P2 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style P3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style P4 fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+    style P5 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style P6 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 bg-orange-100 border-l-4 border-orange-500 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 text-sm">📊 Data Transformation at Each Step:</h4>
+          <div class="space-y-2 text-sm">
+            <p><strong>Step 1:</strong> URL String → HTTP Request Object</p>
+            <p><strong>Step 2:</strong> Request Object → Parameter String "5"</p>
+            <p><strong>Step 3:</strong> Parameter String → Integer (id = 5) + Validation (true/false)</p>
+            <p><strong>Step 4:</strong> ID Integer → SQL DELETE Statement (DELETE WHERE id=5)</p>
+            <p><strong>Step 5:</strong> SQL Execution → Result (1 row affected)</p>
+            <p><strong>Step 6:</strong> Success → HTTP Redirect (Location: listUsers.jsp)</p>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-orange-50 border-2 border-orange-300 p-4 rounded-lg">
+          <p class="text-sm flex items-start">
+            <i class="fas fa-lightbulb text-orange-600 mr-2 mt-1"></i>
+            <span><strong>Why DELETE is Simple:</strong> Only needs ONE data item (ID) and ONE step (deletion). 
+            No form display, no complex validation - just ID check and delete!</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- DFD 4: UPDATE Operation -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-blue-300">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+            <i class="fas fa-edit text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-blue-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P3 - UPDATE DFD</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Data Flow: Modify Record (2-Phase)</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-list-ol text-blue-600 mr-2"></i>
+            Step-by-Step Data Flow (Two Phases)
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-blue-100 p-3 rounded">
+              <p class="text-sm font-semibold mb-2">📥 Phase 1: LOAD DATA</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• Input: id parameter</li>
+                <li>• Fetch existing data</li>
+                <li>• Display in form</li>
+              </ul>
+            </div>
+            <div class="bg-indigo-100 p-3 rounded">
+              <p class="text-sm font-semibold mb-2">📤 Phase 2: SAVE CHANGES</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• Input: id, name, email</li>
+                <li>• Update database</li>
+                <li>• Redirect to list</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <h4 class="font-semibold mb-3 text-center text-blue-700">
+            🔵 PHASE 1: editUser.jsp - Load Data for Editing
+          </h4>
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 1: GET Request<br/>editUser.jsp?id=5"| P1[Process 4.0<br/>📄 editUser.jsp<br/>Receive Request]
+    
+    P1 -->|"Step 2: Extract ID<br/>id = 5"| P2[Process 4.1<br/>🔍 Get Parameter<br/>Parse ID]
+    
+    P2 -->|"Step 3: Validate ID"| P3{Process 4.2<br/>✅ Validation<br/>Valid?}
+    
+    P3 -->|"Invalid"| P4[Process 4.3<br/>❌ Error Handler]
+    P4 --> User
+    
+    P3 -->|"Valid: id=5"| P5[Process 4.4<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P5 -->|"Step 4: SQL Query<br/>SELECT * FROM users<br/>WHERE id = 5"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 5: Result<br/>{id:5, name:'John',<br/>email:'john@mail.com'}"| P6[Process 4.5<br/>📝 Form Generator<br/>Populate Fields]
+    
+    P6 -->|"Step 6: HTML Form<br/>(Pre-filled with data)<br/>+ Hidden ID field"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P1 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P2 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style P4 fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+    style P5 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P6 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-8 bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <h4 class="font-semibold mb-3 text-center text-indigo-700">
+            🔷 PHASE 2: updateUser.jsp - Save Modified Data
+          </h4>
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 7: POST Data<br/>{id:5, name:'John Smith',<br/>email:'johnsmith@mail.com'}"| P7[Process 4.6<br/>📄 updateUser.jsp<br/>Receive Form Data]
+    
+    P7 -->|"Step 8: Extract All Data<br/>id, name, email"| P8[Process 4.7<br/>🔍 Parameter Parser<br/>Get All Fields]
+    
+    P8 -->|"Step 9: Validate Data"| P9{Process 4.8<br/>✅ Validation<br/>All Valid?}
+    
+    P9 -->|"Invalid"| P10[Process 4.9<br/>❌ Error Handler]
+    P10 --> User
+    
+    P9 -->|"Valid"| P11[Process 4.10<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P11 -->|"Step 10: SQL Query<br/>UPDATE users<br/>SET name=?, email=?<br/>WHERE id=?"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 11: Update Result<br/>(1 row updated)"| P12[Process 4.11<br/>✔️ Success Handler<br/>Close Resources]
+    
+    P12 -->|"Step 12: Redirect<br/>Location: listUsers.jsp"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P7 fill:#c7d2fe,stroke:#6366f1,stroke-width:2px
+    style P8 fill:#c7d2fe,stroke:#6366f1,stroke-width:2px
+    style P9 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style P10 fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+    style P11 fill:#c7d2fe,stroke:#6366f1,stroke-width:2px
+    style P12 fill:#c7d2fe,stroke:#6366f1,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 bg-blue-100 border-l-4 border-blue-500 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 text-sm">📊 Complete Data Transformation (Both Phases):</h4>
+          <div class="space-y-3 text-sm">
+            <div class="bg-white p-3 rounded">
+              <p class="font-semibold text-blue-700">Phase 1 - FETCH DATA:</p>
+              <p><strong>Step 1-2:</strong> URL "?id=5" → Integer (5)</p>
+              <p><strong>Step 4-5:</strong> ID → SQL SELECT → ResultSet {id:5, name:"John", email:"john@mail.com"}</p>
+              <p><strong>Step 6:</strong> ResultSet → Pre-filled HTML Form</p>
+            </div>
+            <div class="bg-white p-3 rounded">
+              <p class="font-semibold text-indigo-700">Phase 2 - SAVE CHANGES:</p>
+              <p><strong>Step 7-8:</strong> Form POST → {id:5, name:"John Smith", email:"johnsmith@mail.com"}</p>
+              <p><strong>Step 10:</strong> Validated Data → SQL UPDATE Statement</p>
+              <p><strong>Step 11-12:</strong> Update Result → HTTP Redirect</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-indigo-50 border-2 border-indigo-300 p-4 rounded-lg">
+          <p class="text-sm flex items-start">
+            <i class="fas fa-brain text-indigo-600 mr-2 mt-1"></i>
+            <span><strong>Why UPDATE is Most Complex:</strong> It combines READ (Phase 1) + ADD (Phase 2) concepts. 
+            You must fetch data first, then modify it. That's why it requires TWO separate JSP files and TWO request-response cycles!</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- DFD Comparison Summary -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+            <i class="fas fa-balance-scale text-indigo-600 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">DFD Comparison: All CRUD Operations</h2>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                <th class="border-2 border-indigo-800 p-3 text-left">Operation</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Priority</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Input Data</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Processes</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">SQL Query</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Output Data</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Complexity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-yellow-50 hover:bg-yellow-100">
+                <td class="border-2 p-3 font-semibold">
+                  <i class="fas fa-eye text-yellow-600"></i> READ
+                </td>
+                <td class="border-2 p-3">
+                  <span class="bg-yellow-400 px-2 py-1 rounded text-xs font-bold">P0</span>
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • No input needed<br/>
+                  • Just page request
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • 1 JSP file<br/>
+                  • 6 steps<br/>
+                  • 1 DB query
+                </td>
+                <td class="border-2 p-3 text-sm font-mono">
+                  SELECT *<br/>FROM users
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • HTML table<br/>
+                  • All records<br/>
+                  • Action links
+                </td>
+                <td class="border-2 p-3">
+                  <div class="flex items-center">
+                    <div class="w-16 bg-green-200 h-2 rounded"></div>
+                    <span class="ml-2 text-xs">Low</span>
+                  </div>
+                </td>
+              </tr>
+              <tr class="bg-green-50 hover:bg-green-100">
+                <td class="border-2 p-3 font-semibold">
+                  <i class="fas fa-plus-circle text-green-600"></i> ADD
+                </td>
+                <td class="border-2 p-3">
+                  <span class="bg-green-400 px-2 py-1 rounded text-xs font-bold">P1</span>
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • name (String)<br/>
+                  • email (String)<br/>
+                  • POST method
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • 2 JSP files<br/>
+                  • 7 steps<br/>
+                  • Validation<br/>
+                  • 1 DB insert
+                </td>
+                <td class="border-2 p-3 text-sm font-mono">
+                  INSERT INTO<br/>users VALUES<br/>(?,?)
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • New record<br/>
+                  • Success msg<br/>
+                  • Redirect
+                </td>
+                <td class="border-2 p-3">
+                  <div class="flex items-center">
+                    <div class="w-24 bg-yellow-300 h-2 rounded"></div>
+                    <span class="ml-2 text-xs">Medium</span>
+                  </div>
+                </td>
+              </tr>
+              <tr class="bg-orange-50 hover:bg-orange-100">
+                <td class="border-2 p-3 font-semibold">
+                  <i class="fas fa-trash text-orange-600"></i> DELETE
+                </td>
+                <td class="border-2 p-3">
+                  <span class="bg-orange-400 px-2 py-1 rounded text-xs font-bold">P2</span>
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • id (Integer)<br/>
+                  • GET parameter<br/>
+                  • From URL
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • 1 JSP file<br/>
+                  • 6 steps<br/>
+                  • ID validation<br/>
+                  • 1 DB delete
+                </td>
+                <td class="border-2 p-3 text-sm font-mono">
+                  DELETE FROM<br/>users<br/>WHERE id=?
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • Record removed<br/>
+                  • Auto redirect<br/>
+                  • Updated list
+                </td>
+                <td class="border-2 p-3">
+                  <div class="flex items-center">
+                    <div class="w-20 bg-green-300 h-2 rounded"></div>
+                    <span class="ml-2 text-xs">Low</span>
+                  </div>
+                </td>
+              </tr>
+              <tr class="bg-blue-50 hover:bg-blue-100">
+                <td class="border-2 p-3 font-semibold">
+                  <i class="fas fa-edit text-blue-600"></i> UPDATE
+                </td>
+                <td class="border-2 p-3">
+                  <span class="bg-blue-400 px-2 py-1 rounded text-xs font-bold">P3</span>
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  <strong>Phase 1:</strong> id<br/>
+                  <strong>Phase 2:</strong><br/>
+                  • id, name, email<br/>
+                  • POST method
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • 2 JSP files<br/>
+                  • 12 steps (2 phases)<br/>
+                  • 2 validations<br/>
+                  • 1 SELECT + 1 UPDATE
+                </td>
+                <td class="border-2 p-3 text-sm font-mono">
+                  SELECT *<br/>WHERE id=?<br/><br/>
+                  UPDATE users<br/>SET name=?,<br/>email=?<br/>WHERE id=?
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • Pre-filled form<br/>
+                  • Updated record<br/>
+                  • Redirect
+                </td>
+                <td class="border-2 p-3">
+                  <div class="flex items-center">
+                    <div class="w-32 bg-red-400 h-2 rounded"></div>
+                    <span class="ml-2 text-xs">High</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-3 gap-4">
+          <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg border-2 border-green-300">
+            <h4 class="font-semibold mb-2 text-sm flex items-center">
+              <i class="fas fa-check-circle text-green-600 mr-2"></i>
+              Simplest Operations
+            </h4>
+            <ul class="text-xs space-y-1">
+              <li>✓ READ: No input validation needed</li>
+              <li>✓ DELETE: Only 1 data item (ID)</li>
+              <li>✓ Both use single JSP file</li>
+            </ul>
+          </div>
+          <div class="bg-gradient-to-br from-yellow-50 to-amber-50 p-4 rounded-lg border-2 border-yellow-300">
+            <h4 class="font-semibold mb-2 text-sm flex items-center">
+              <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+              Medium Complexity
+            </h4>
+            <ul class="text-xs space-y-1">
+              <li>• ADD: Form + validation required</li>
+              <li>• Two JSP files needed</li>
+              <li>• Multiple data fields</li>
+            </ul>
+          </div>
+          <div class="bg-gradient-to-br from-red-50 to-orange-50 p-4 rounded-lg border-2 border-red-300">
+            <h4 class="font-semibold mb-2 text-sm flex items-center">
+              <i class="fas fa-brain text-red-600 mr-2"></i>
+              Most Complex
+            </h4>
+            <ul class="text-xs space-y-1">
+              <li>⚠ UPDATE: Two-phase process</li>
+              <li>⚠ Combines READ + ADD</li>
+              <li>⚠ Requires 2 DB queries</li>
+            </ul>
+          </div>
         </div>
       </section>
 
