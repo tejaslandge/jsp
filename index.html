@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>JSP with Maven & Tomcat – Student Notes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Copy Button Script -->
+    <script>
+      function copyCode(button) {
+        const pre = button.nextElementSibling;
+        const text = pre.innerText;
+
+        navigator.clipboard.writeText(text).then(() => {
+          const original = button.innerText;
+          button.innerText = "Copied!";
+          button.classList.add("bg-green-600");
+
+          setTimeout(() => {
+            button.innerText = original;
+            button.classList.remove("bg-green-600");
+          }, 1500);
+        });
+      }
+    </script>
+  </head>
+
+  <body class="bg-slate-100 text-slate-800">
+    <header class="bg-slate-900 text-white py-8 shadow">
+      <div class="max-w-5xl mx-auto px-4 text-center">
+        <h1 class="text-3xl font-bold mb-2">
+          JSP with Maven & Embedded Tomcat
+        </h1>
+        <p class="text-slate-300">Complete Notes for Students</p>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+      <!-- 1 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">1. Prerequisites</h2>
+        <ul class="list-disc list-inside space-y-1">
+          <li>Java JDK 8 or above</li>
+          <li>Apache Maven</li>
+          <li>VS Code / Antigravity</li>
+          <li>
+            VS Code Extensions:
+            <ul class="list-disc list-inside ml-6">
+              <li>Extension Pack for Java</li>
+              <li>Maven for Java</li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="relative mt-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+java -version
+mvn -version
+        </pre
+          >
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">
+          2. Create Maven Web Project (JSP)
+        </h2>
+
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+mvn archetype:generate -DgroupId=com.cia -DartifactId=jsp-demo -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
+        </pre
+          >
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">3. Project Structure</h2>
+
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+jsp-demo/
+ ├── pom.xml
+ └── src/
+     └── main/
+         └── webapp/
+             └── index.jsp
+        </pre
+          >
+        </div>
+
+        <ul class="mt-4 list-disc list-inside">
+          <li><strong>index.jsp</strong> – Entry point</li>
+          <li><strong>pom.xml</strong> – Maven configuration</li>
+        </ul>
+      </section>
+
+      <!-- 4 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">4. pom.xml Configuration</h2>
+
+        <ul class="list-disc list-inside mb-4">
+          <li>Packaging type: <strong>WAR</strong></li>
+          <li>Embedded Tomcat</li>
+          <li>Port changed to <strong>8081</strong></li>
+        </ul>
+
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+<pre>
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;<span style="color: red;">com.example</span>&lt;/groupId&gt;
+    &lt;artifactId&gt;<span style="color: red;">demo</span>&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;packaging&gt;war&lt;/packaging&gt;
+    &lt;name&gt;<span style="color: red;">demo</span> Maven Webapp&lt;/name&gt;
+    &lt;url&gt;http://maven.apache.org&lt;/url&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-j&lt;/artifactId&gt;
+            &lt;version&gt;8.0.33&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;finalName&gt;<span style="color: red;">demo</span>&lt;/finalName&gt;
+
+        &lt;plugins&gt;
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
+                &lt;version&gt;3.4.0&lt;/version&gt;
+            &lt;/plugin&gt;
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+                &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.2&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;path&gt;/<span style="color: red;">demo</span>&lt;/path&gt;
+                    &lt;port&gt;8081&lt;/port&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+&lt;/project&gt;
+</pre>
+
+        </pre>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">5. Sample JSP Programs</h2>
+
+        <h3 class="font-semibold mb-2">Sample 1: Query Parameter</h3>
+        <div class="relative mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;%
+String num = request.getParameter("number");
+if (num != null) {
+    int x = Integer.parseInt(num);
+%&gt;
+Square: &lt;%= x * x %&gt;
+&lt;% } %&gt;
+        </pre
+          >
+        </div>
+
+        <h3 class="font-semibold mb-2">Sample 2: POST Form</h3>
+        <div class="relative mb-6">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;form method="post"&gt;
+    &lt;input type="text" name="number"&gt;
+    &lt;input type="submit"&gt;
+&lt;/form&gt;
+        </pre
+          >
+        </div>
+
+        <h3 class="font-semibold mb-2">Sample 3: Database Connection</h3>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+Class.forName("com.mysql.cj.jdbc.Driver");
+Connection con = DriverManager.getConnection(url, user, password);
+        </pre
+          >
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">6. Maven Build Commands</h2>
+
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+mvn clean
+mvn package
+mvn install
+        </pre
+          >
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">7. Run JSP Application</h2>
+
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm">
+mvn tomcat7:run
+        </pre
+          >
+        </div>
+
+        <p class="mt-2">Tomcat runs on port <strong>8081</strong></p>
+      </section>
+
+      <!-- 8 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">8. Access in Browser</h2>
+
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm">
+http://localhost:8081/jsp-demo/index.jsp?number=5
+        </pre
+          >
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">9. Important Notes</h2>
+        <ul class="list-disc list-inside space-y-1">
+          <li>JSP cannot run directly in browser</li>
+          <li>JSP needs Tomcat</li>
+          <li>WAR files are deployed, not executed</li>
+          <li>Embedded Tomcat is ideal for learning</li>
+        </ul>
+      </section>
+
+      <!-- 10 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">10. Common Mistakes</h2>
+        <ul class="list-disc list-inside space-y-1">
+          <li>Using Live Server (JSP not supported)</li>
+          <li>Running WAR directly</li>
+          <li>Port 8080 conflict</li>
+        </ul>
+      </section>
+
+      <!-- 11 -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">11. Summary</h2>
+        <ul class="list-disc list-inside space-y-1">
+          <li>Maven manages dependencies</li>
+          <li>Tomcat executes JSP</li>
+          <li>VS Code + Maven is industry-relevant</li>
+        </ul>
+      </section>
+
+      <!-- CRUD -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">
+          12. CRUD Operations in JSP (Complete Guide)
+        </h2>
+
+        <p class="mb-4">
+          CRUD stands for <strong>Create, Read, Update, Delete</strong>. In JSP,
+          CRUD is usually implemented using:
+        </p>
+
+        <ul class="list-disc list-inside mb-4 space-y-1">
+          <li>JSP for UI</li>
+          <li>JDBC for database connectivity</li>
+          <li>MySQL as backend database</li>
+          <li>Embedded Tomcat to run application</li>
+        </ul>
+
+        <!-- DB TABLE -->
+        <h3 class="font-semibold mt-6 mb-2">Step 1: Database Table</h3>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+        </pre
+          >
+        </div>
+
+        <!-- DB CONNECTION -->
+        <h3 class="font-semibold mt-6 mb-2">
+          Step 2: Database Connection (JSP)
+        </h3>
+        <p class="mb-2">This code connects JSP with MySQL using JDBC.</p>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;%@ page import="java.sql.*" %&gt;
+&lt;%
+String url = "jdbc:mysql://localhost:3306/your_db?useSSL=false";
+String user = "root";
+String pass = "password";
+
+Class.forName("com.mysql.cj.jdbc.Driver");
+Connection con = DriverManager.getConnection(url, user, pass);
+%&gt;
+        </pre
+          >
+        </div>
+
+        <!-- CREATE -->
+        <h3 class="font-semibold mt-6 mb-2">CREATE – Insert Record</h3>
+        <p class="mb-2">Insert data into database using JSP.</p>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;%
+String name = request.getParameter("name");
+String email = request.getParameter("email");
+
+PreparedStatement ps =
+    con.prepareStatement("INSERT INTO users(name,email) VALUES(?,?)");
+ps.setString(1, name);
+ps.setString(2, email);
+ps.executeUpdate();
+%&gt;
+        </pre
+          >
+        </div>
+
+        <!-- READ -->
+        <h3 class="font-semibold mt-6 mb-2">READ – Fetch Records</h3>
+        <p class="mb-2">Display records from database.</p>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;%
+Statement st = con.createStatement();
+ResultSet rs = st.executeQuery("SELECT * FROM users");
+
+while(rs.next()) {
+%&gt;
+&lt;p&gt;
+ID: &lt;%= rs.getInt("id") %&gt; |
+Name: &lt;%= rs.getString("name") %&gt; |
+Email: &lt;%= rs.getString("email") %&gt;
+&lt;/p&gt;
+&lt;% } %&gt;
+        </pre
+          >
+        </div>
+
+        <!-- UPDATE -->
+        <h3 class="font-semibold mt-6 mb-2">UPDATE – Modify Record</h3>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;%
+PreparedStatement ps =
+    con.prepareStatement("UPDATE users SET name=? WHERE id=?");
+ps.setString(1, "New Name");
+ps.setInt(2, 1);
+ps.executeUpdate();
+%&gt;
+        </pre
+          >
+        </div>
+
+        <!-- DELETE -->
+        <h3 class="font-semibold mt-6 mb-2">DELETE – Remove Record</h3>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;%
+PreparedStatement ps =
+    con.prepareStatement("DELETE FROM users WHERE id=?");
+ps.setInt(1, 1);
+ps.executeUpdate();
+%&gt;
+        </pre
+          >
+        </div>
+
+        <!-- NOTES -->
+        <h3 class="font-semibold mt-6 mb-2">
+          Important Notes (Exam + Practical)
+        </h3>
+        <ul class="list-disc list-inside space-y-1">
+          <li>
+            Always use <strong>PreparedStatement</strong> (prevents SQL
+            Injection)
+          </li>
+          <li>Close Connection after use</li>
+          <li>
+            JSP should not contain heavy business logic (but OK for learning)
+          </li>
+          <li>In real projects, Servlets + DAO are used</li>
+        </ul>
+      </section>
+      <!-- CRUD NOTES -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold mb-4">
+          13. Notes: CRUD in JSP (File-wise Complete Guide)
+        </h2>
+
+        <p class="mb-4">
+          This section explains how CRUD (Create, Read, Update, Delete)
+          operations are implemented in JSP using multiple JSP files. This
+          approach is commonly used in labs and exams.
+        </p>
+
+        <!-- STRUCTURE -->
+        <h3 class="font-semibold mt-6 mb-2">Project File Structure</h3>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+src/main/webapp/
+ ├── db.jsp
+ ├── addUser.jsp
+ ├── insertUser.jsp
+ ├── listUsers.jsp
+ ├── editUser.jsp
+ ├── updateUser.jsp
+ └── deleteUser.jsp
+        </pre
+          >
+        </div>
+
+        <!-- DB JSP -->
+        <h3 class="font-semibold mt-6 mb-2">db.jsp – Database Connection</h3>
+        <p class="mb-2">
+          <strong>Purpose:</strong> Centralized database connection file. This
+          file is included in other JSP pages.
+        </p>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;%@ page import="java.sql.*" %&gt;
+&lt;%
+String url = "jdbc:mysql://localhost:3306/your_db?useSSL=false&serverTimezone=UTC";
+String user = "root";
+String password = "password";
+
+Class.forName("com.mysql.cj.jdbc.Driver");
+Connection con = DriverManager.getConnection(url, user, password);
+%&gt;
+        </pre
+          >
+        </div>
+
+        <!-- ADD USER FORM -->
+        <h3 class="font-semibold mt-6 mb-2">
+          addUser.jsp – Create (HTML Form)
+        </h3>
+
+        <p class="mb-2">
+          <strong>Purpose:</strong> Collect user input and send it to
+          <code>insertUser.jsp</code>.<br />
+          <strong>Validation:</strong> Client-side validation using JavaScript.
+        </p>
+
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Add User&lt;/title&gt;
+
+    &lt;script&gt;
+        function validateForm() {
+            let name = document.forms["userForm"]["name"].value;
+            let email = document.forms["userForm"]["email"].value;
+
+            if (name.trim() === "" || email.trim() === "") {
+                alert("All fields are required");
+                return false;
+            }
+            return true;
+        }
+    &lt;/script&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;h2&gt;Add User&lt;/h2&gt;
+
+&lt;form name="userForm"
+      action="insertUser.jsp"
+      method="post"
+      onsubmit="return validateForm()"&gt;
+
+    Name:&lt;br&gt;
+    &lt;input type="text" name="name"&gt;&lt;br&gt;&lt;br&gt;
+
+    Email:&lt;br&gt;
+    &lt;input type="email" name="email"&gt;&lt;br&gt;&lt;br&gt;
+
+    &lt;input type="submit" value="Save"&gt;
+&lt;/form&gt;
+
+&lt;br&gt;
+&lt;a href="listUsers.jsp"&gt;View Users&lt;/a&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+  </pre
+          >
+        </div>
+
+        <!-- INSERT -->
+        <h3 class="font-semibold mt-6 mb-2">
+          insertUser.jsp – Create (Server Handling)
+        </h3>
+
+        <p class="mb-2">
+          <strong>Purpose:</strong> Inserts user record into database.<br />
+          <strong>Validation:</strong> Server-side validation is mandatory.
+        </p>
+
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String name = request.getParameter("name");
+String email = request.getParameter("email");
+
+/* Server-side validation */
+if (name == null || email == null ||
+    name.trim().equals("") || email.trim().equals("")) {
+
+    out.println("Invalid Input");
+    return;
+}
+
+PreparedStatement ps =
+    con.prepareStatement(
+        "INSERT INTO users(name, email) VALUES (?, ?)"
+    );
+
+ps.setString(1, name);
+ps.setString(2, email);
+
+int rows = ps.executeUpdate();
+
+/* Close resources */
+ps.close();
+con.close();
+
+/* Redirect after successful insert */
+if (rows > 0) {
+    response.sendRedirect("listUsers.jsp");
+} else {
+    out.println("Insert failed");
+}
+%&gt;
+  </pre
+          >
+        </div>
+
+        <!-- READ -->
+        <h3 class="font-semibold mt-6 mb-2">listUsers.jsp – Read</h3>
+        <p class="mb-2">
+          <strong>Purpose:</strong> Displays all records with Edit/Delete links.
+        </p>
+        <div class="relative">
+          <h3 class="font-semibold mt-6 mb-2">listUsers.jsp – READ Records</h3>
+          <p class="mb-2">
+            <strong>Purpose:</strong> Fetch and display all user records from
+            database.
+          </p>
+
+          <div class="relative">
+            <button
+              onclick="copyCode(this)"
+              class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+            >
+              Copy
+            </button>
+
+            <pre
+              class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+            >
+&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;h2&gt;User List&lt;/h2&gt;
+
+&lt;table border="1"&gt;
+&lt;tr&gt;
+  &lt;th&gt;ID&lt;/th&gt;
+  &lt;th&gt;Name&lt;/th&gt;
+  &lt;th&gt;Email&lt;/th&gt;
+&lt;/tr&gt;
+
+&lt;%
+Statement st = con.createStatement();
+ResultSet rs = st.executeQuery("SELECT * FROM users");
+
+while(rs.next()){
+%&gt;
+&lt;tr&gt;
+  &lt;td&gt;&lt;%= rs.getInt("id") %&gt;&lt;/td&gt;
+  &lt;td&gt;&lt;%= rs.getString("name") %&gt;&lt;/td&gt;
+  &lt;td&gt;&lt;%= rs.getString("email") %&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;%
+}
+
+rs.close();
+st.close();
+con.close();
+%&gt;
+
+&lt;/table&gt;
+  </pre
+            >
+          </div>
+        </div>
+
+        <!-- UPDATE & DELETE NOTES -->
+        <section class="bg-white p-6 rounded-xl shadow">
+          <h2 class="text-xl font-semibold mb-4">
+            14. Notes: UPDATE & DELETE in JSP (Full File Code)
+          </h2>
+
+          <p class="mb-4">
+            This section explains how <strong>Update</strong> and
+            <strong>Delete</strong>
+            operations are implemented in JSP using separate files. This is the
+            most common structure used in labs and exams.
+          </p>
+
+          <!-- EDIT USER -->
+          <h3 class="font-semibold mt-6 mb-2">
+            editUser.jsp – Load Data for Update
+          </h3>
+          <p class="mb-2">
+            <strong>Purpose:</strong>
+            Fetch user record using ID and display it in an editable form.
+          </p>
+
+          <div class="relative">
+            <button
+              onclick="copyCode(this)"
+              class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+            >
+              Copy
+            </button>
+
+            <pre
+              class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+            >
+&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String idParam = request.getParameter("id");
+
+if (idParam == null) {
+    out.println("Invalid User ID");
+    return;
+}
+
+int id = Integer.parseInt(idParam);
+
+PreparedStatement ps =
+    con.prepareStatement("SELECT * FROM users WHERE id=?");
+ps.setInt(1, id);
+
+ResultSet rs = ps.executeQuery();
+
+if (!rs.next()) {
+    out.println("User not found");
+    return;
+}
+%&gt;
+
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;h2&gt;Edit User&lt;/h2&gt;
+
+&lt;form action="updateUser.jsp" method="post"&gt;
+
+    &lt;!-- Hidden ID field is mandatory --&gt;
+    &lt;input type="hidden" name="id"
+           value="&lt;%= rs.getInt("id") %&gt;"&gt;
+
+    Name:&lt;br&gt;
+    &lt;input type="text" name="name"
+           value="&lt;%= rs.getString("name") %&gt;" required&gt;&lt;br&gt;&lt;br&gt;
+
+    Email:&lt;br&gt;
+    &lt;input type="email" name="email"
+           value="&lt;%= rs.getString("email") %&gt;" required&gt;&lt;br&gt;&lt;br&gt;
+
+    &lt;input type="submit" value="Update"&gt;
+&lt;/form&gt;
+
+&lt;a href="listUsers.jsp"&gt;Back to List&lt;/a&gt;
+
+&lt;%
+rs.close();
+ps.close();
+con.close();
+%&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+        </pre
+            >
+          </div>
+
+          <!-- UPDATE USER -->
+          <h3 class="font-semibold mt-6 mb-2">
+            updateUser.jsp – Update Record
+          </h3>
+          <p class="mb-2">
+            <strong>Purpose:</strong>
+            Receives updated data, validates it, and updates the database.
+          </p>
+
+          <div class="relative">
+            <button
+              onclick="copyCode(this)"
+              class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+            >
+              Copy
+            </button>
+
+            <pre
+              class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+            >
+&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String idParam = request.getParameter("id");
+String name = request.getParameter("name");
+String email = request.getParameter("email");
+
+/* Server-side validation */
+if (idParam == null || name == null || email == null ||
+    name.trim().equals("") || email.trim().equals("")) {
+
+    out.println("Invalid input data");
+    return;
+}
+
+int id = Integer.parseInt(idParam);
+
+PreparedStatement ps =
+    con.prepareStatement(
+        "UPDATE users SET name=?, email=? WHERE id=?"
+    );
+
+ps.setString(1, name);
+ps.setString(2, email);
+ps.setInt(3, id);
+
+int rows = ps.executeUpdate();
+
+ps.close();
+con.close();
+
+if (rows > 0) {
+    response.sendRedirect("listUsers.jsp");
+} else {
+    out.println("Update failed");
+}
+%&gt;
+        </pre
+            >
+          </div>
+
+          <!-- DELETE USER -->
+          <h3 class="font-semibold mt-6 mb-2">
+            deleteUser.jsp – Delete Record
+          </h3>
+          <p class="mb-2">
+            <strong>Purpose:</strong>
+            Deletes a record using ID and redirects to list page.
+          </p>
+
+          <div class="relative">
+            <button
+              onclick="copyCode(this)"
+              class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+            >
+              Copy
+            </button>
+
+            <pre
+              class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+            >
+&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String idParam = request.getParameter("id");
+
+if (idParam == null) {
+    out.println("Invalid User ID");
+    return;
+}
+
+int id = Integer.parseInt(idParam);
+
+PreparedStatement ps =
+    con.prepareStatement("DELETE FROM users WHERE id=?");
+
+ps.setInt(1, id);
+ps.executeUpdate();
+
+ps.close();
+con.close();
+
+response.sendRedirect("listUsers.jsp");
+%&gt;
+        </pre
+            >
+          </div>
+
+          <!-- IMPORTANT NOTES -->
+          <h3 class="font-semibold mt-6 mb-2">Important Notes (Exam & Viva)</h3>
+          <ul class="list-disc list-inside space-y-1">
+            <li>Hidden ID field is mandatory for update</li>
+            <li>Always validate input on server-side</li>
+            <li>Use PreparedStatement to prevent SQL Injection</li>
+            <li>Redirect after update/delete to avoid duplicate actions</li>
+          </ul>
+
+          
+        </section>
+
+        <!-- VALIDATION -->
+        <h3 class="font-semibold mt-6 mb-2">
+          Form Validation & Error Handling
+        </h3>
+        <ul class="list-disc list-inside space-y-1">
+          <li>Client-side validation improves user experience</li>
+          <li>Server-side validation is mandatory for security</li>
+          <li>PreparedStatement prevents SQL Injection</li>
+          <li>Always check for null or empty inputs</li>
+        </ul>
+
+        <!-- FLOW -->
+        <h3 class="font-semibold mt-6 mb-2">CRUD Flow (Very Important)</h3>
+        <div class="relative">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1 rounded"
+          >
+            Copy
+          </button>
+          <pre
+            class="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto"
+          >
+addUser.jsp → insertUser.jsp → listUsers.jsp
+listUsers.jsp → editUser.jsp → updateUser.jsp → listUsers.jsp
+listUsers.jsp → deleteUser.jsp → listUsers.jsp
+        </pre
+          >
+        </div>
+
+        <p class="mt-4 text-sm text-slate-600">
+          Note: This JSP-only approach is for learning purposes. Real-world
+          applications use Servlets and MVC architecture.
+        </p>
+      </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-300 text-center py-4">
+      Prepared for JSP Students
+    </footer>
+  </body>
+</html>
